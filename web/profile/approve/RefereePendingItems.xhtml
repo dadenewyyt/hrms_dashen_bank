@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employe Referees Approval">
+                <p:menuButton value="Referee">
+                    <p:menuitem value="Approve" actionListener="#{refereePendingItemsBean.approveSelectedRows()}" update="pendingRefereesDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{refereePendingItemsBean.makeEditableByMaker()}" update="pendingRefereesDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingRefereesDataTable" var="tmpR" value="#{refereePendingItemsBean.pendingTmpReferees}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              emptyMessage="No Pending Referees" rowKey="#{tmpR.id}" selection="#{refereePendingItemsBean.selectedRefereeTmp}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Referees
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingRefereesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="single" style="width:40px;text-align:center"/>
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="First Name" >
+                        <h:outputText value="#{tmpR.firstName}" />
+                    </p:column>                   
+                    <p:column  headerText="Middle Name" >
+                        <h:outputText value="#{tmpR.middleName}" />
+                    </p:column> 
+                    <p:column  headerText="Last Name" >
+                        <h:outputText value="#{tmpR.lastName}" />
+                    </p:column> 
+                    <p:column  headerText="Salary" >
+                        <h:outputText value="#{tmpR.salary}" />
+                    </p:column> 
+                    <p:column  headerText="Kebele ID" >
+                        <h:outputText value="#{tmpR.kebeleId}" />
+                    </p:column> 
+                    <p:column  headerText="Residential Address" >
+                        <h:outputText value="#{tmpR.residentialAddress}" />
+                    </p:column> 
+                    <p:column  headerText="Name of Employer" >
+                        <h:outputText value="#{tmpR.employer}" />
+                    </p:column> 
+                    <p:column  headerText="Employer Address" >
+                        <h:outputText value="#{tmpR.employerAddress}" />
+                    </p:column> 
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpR.tmpStatus}" />
+                    </p:column> 
+                    <p:rowExpansion > 
+
+                        <p:panel rendered="#{tmpR.tmpDocumentUploaded}"> 
+
+                            <p:graphicImage   value="#{configuration.REFEREE_DOCUMENTS_PATH}#{tmpR.tmpDocumentFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

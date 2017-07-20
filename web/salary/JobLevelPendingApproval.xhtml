@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="JobLevels Pending Approval">
+                <p:menuButton value="JobLevel">
+                    <p:menuitem value="Approve" actionListener="#{jobLevelsPendingApprovalBean.approveSelectedRows}" update="pendingJobLevelsDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{jobLevelsPendingApprovalBean.makeEditableByMaker()}" update="pendingJobLevelsDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingJobLevelsDataTable" var="tmpJobLevel" value="#{jobLevelsPendingApprovalBean.pendingTmpJobLevels}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              rowKey="#{tmpJobLevel.ID}" selection="#{jobLevelsPendingApprovalBean.selectedJobLevelTmps}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending JobLevels
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingJobLevelsDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    <p:column  headerText="Level" >
+                        <h:outputText value="#{tmpJobLevel.level}" />
+                    </p:column>
+                    <p:column  headerText="Description" >
+                        <h:outputText value="#{tmpJobLevel.description}" />
+                    </p:column>
+                    <p:column   headerText="Temp Status" >
+                        <h:outputText value="#{tmpJobLevel.tempDetail.tempStatus}" />                  
+
+                    </p:column>
+                    <p:column   headerText="Maker" >
+                        <h:outputText value="#{tmpJobLevel.tempDetail.createdBy}" />
+
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

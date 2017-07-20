@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="messages" showDetail="true"  globalOnly="true" />
+
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="New Employee Registration">
+
+                <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                    <h:outputText value="First Name : "/>
+                    <h:panelGroup>
+                        <p:inputText    id="firstNameInputText" style="width: 280px" required="true"  requiredMessage="First Name cannot be empty." validatorMessage="First Name must be 2-40 characters in length."
+                                        value="#{newEmployeeBean.newTmpEmp.firstName}" > 
+
+                            <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                        </p:inputText><br/>
+                        <p:message id="ms1" for="firstNameInputText" style="color:red" display="text"></p:message>
+                    </h:panelGroup>
+                    <h:outputText value="Middle Name : "/>
+                    <h:panelGroup>
+                        <p:inputText id="middleNameInputText" style="width: 280px" required="true"  requiredMessage="Middle Name cannot be empty." validatorMessage="Middle Name must be 2-40 characters in length."
+                                     value="#{newEmployeeBean.newTmpEmp.middleName}" >            
+                            <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                        </p:inputText>
+                        <p:message id="ms2" for="middleNameInputText" style="color:red" display="text" ></p:message>
+                    </h:panelGroup>
+                    <h:outputText value="Last Name : "/>
+                    <h:panelGroup>                        
+                        <p:inputText id="lastNameInputText" style="width: 280px" required="true"  requiredMessage="Last Name cannot be empty." validatorMessage="Last Name must be 2-40 characters in length."
+                                     value="#{newEmployeeBean.newTmpEmp.lastName}" >            
+                            <f:validateLength maximum="40" minimum="2"  ></f:validateLength>
+
+                        </p:inputText>
+                        <p:message id="ms3"   for="lastNameInputText" style="color:red" display="text"></p:message>
+                    </h:panelGroup>
+
+                    <h:outputText value="Employee ID : "/>
+                    <h:panelGroup>
+                        <p:inputText id="employeIDInputText" style="width: 280px"  maxlength="20" required="true" requiredMessage="Employee ID cannot be empty."
+                                     value="#{newEmployeeBean.newTmpEmp.employeeID}" >            
+
+                        </p:inputText>
+                        <p:message id="ms4"   for="employeIDInputText" style="color:red" display="text"></p:message>
+                    </h:panelGroup>
+                    <h:outputText value="File Index Number : "/>
+                    <h:panelGroup>
+                        <p:inputText id="fileIndexNumberInputText" style="width: 280px" maxlength="20" required="true"  requiredMessage="File Index Number cannot be empty."
+                                     value="#{newEmployeeBean.newTmpEmp.fileIndexNumber}" >            
+
+                        </p:inputText>
+                        <p:message id="ms5"   for="fileIndexNumberInputText" style="color:red" display="text"></p:message>
+                    </h:panelGroup>
+                    <h:outputText value="Sex : "/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="genderSelectOneMenu" style="width:250px" autoWidth="false"  required="true" requiredMessage="Gender must be selected."
+                                         value="#{newEmployeeBean.newTmpEmp.gender}">
+                                <f:selectItem itemLabel="--Select Gender--" itemValue=""/>
+                                <f:selectItems value="#{enumValues.genderValues}" />   
+                                                                  
+                            </p:selectOneMenu >
+                        <p:message   id="ms6" for="genderSelectOneMenu" style="color:red" display="text"></p:message>
+                    </h:panelGroup>
+                    <h:outputText value="Date of Birth : "/>
+                    <p:calendar readonlyInput="true" id="birthDateCalendar" pattern="dd-MMM-yyyy" size="35" rendered="true"
+                                value="#{newEmployeeBean.newTmpEmp.dateOfBirth}" >    
+                    </p:calendar>
+                    <h:outputText value="Date of Employement : "/>                   
+                    <p:calendar readonlyInput="true" id="employmentDateCalendar" pattern="dd-MMM-yyyy" size="35"  required="true"
+                                value="#{newEmployeeBean.newTmpEmp.dateOfEmployement}" >    
+                    </p:calendar>                        
+                    <h:outputText value="Job Classification : "/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="jobClasificationSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Job Classification must be selected."
+                                         value="#{newEmployeeBean.newTmpEmp.jobClasificationID}" >
+                            <f:selectItem itemLabel="--Select Job Clasification--" itemValue=""/>
+                            <f:selectItems value ="#{newEmployeeBean.jobClassificationList}" />                               
+                        </p:selectOneMenu >
+                        <p:message  id="ms7" for="jobClasificationSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                    </h:panelGroup>
+                    <h:outputText value="Emergecy Contact : "/>
+                    <h:panelGroup>
+                        <p:inputText id="emergecyContactInputText" style="width: 280px" maxlength="40" required="true" requiredMessage="Emergency Contact cannot be empty."
+                                     value="#{newEmployeeBean.newTmpEmp.emergecyContact}" >            
+
+                        </p:inputText>
+                        <p:message  id="ms8" for="emergecyContactInputText" style="color:red; width: 280px" display="text"></p:message>
+                    </h:panelGroup>
+                </p:panelGrid>
+            </p:panel>
+            <p:panel>          
+                <p:commandButton   id ="btnSaveNewEmploye" value="Save"  icon="fa fa-fw fa-save" actionListener="#{newEmployeeBean.btnSaveNewEmployee_Handler}" update=":messages ms1 ms2 ms3 ms4 ms5 ms6 ms7 ms8"> 
+
+                </p:commandButton>   
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

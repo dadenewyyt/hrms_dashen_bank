@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" globalOnly="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employees"  toggleable="true">
+                <p:dataTable  id="employeesDataTable" var="emp" value="#{usersBean.lazyEmployeeModel}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" emptyMessage="No employees found."
+                              rowKey="#{emp.employeeSerialID}" selection="#{usersBean.selectedEmployee}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" lazy="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <p:ajax event="rowSelect" listener="#{usersBean.employeesDataTable_rowSelected}" update="inputForm:employeeInputText" /> 
+                    <p:column headerText="Employee ID" sortBy="#{emp.employeeID}" filterBy="#{emp.employeeID}">
+                        #{emp.employeeID}
+                    </p:column>
+                    <p:column  headerText="Name" sortBy="#{emp.firstName}" filterBy="#{emp.firstName}" >
+                        <h:outputText value="#{emp.firstName}" />                   
+
+                    </p:column>
+                    <p:column  headerText="Middle Name" sortBy="#{emp.middleName}" filterBy="#{emp.middleName}" >
+                        <h:outputText value="#{emp.middleName}" />                      
+
+                    </p:column>
+                    <p:column  headerText="Last Name" sortBy="#{emp.lastName}" filterBy="#{emp.lastName}" >
+                        <h:outputText value="#{emp.lastName}"  />                      
+
+                    </p:column>                  
+                    <p:column headerText="File Index No." sortBy="#{emp.fileIndexNumber}" filterBy="#{emp.fileIndexNumber}">
+                        #{emp.fileIndexNumber}
+                    </p:column>
+                </p:dataTable>            
+
+            </p:panel>
+            <p:panel header="New User" >
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="2" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="Username : "/>
+                        <h:panelGroup>
+                            <p:inputText id="usernameInputText" style="width: 280px" required="true"  requiredMessage="Username cannot be empty." validatorMessage="Username must be 5-20 characters in length."
+                                         value="#{usersBean.newUsername}" > 
+
+                                <f:validateLength maximum="20" minimum="5"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="usernameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Password : "/>
+                        <h:panelGroup>
+                            <p:password id="passwordInput" style="width: 280px" required="true"  requiredMessage="Password cannot be empty." validatorMessage="Password must be 5-20 characters in length."
+                                        value="#{usersBean.newPassword}" > 
+
+                                <f:validateLength maximum="20" minimum="5"   ></f:validateLength>
+                            </p:password><br/>
+                            <p:message id="ms2" for="passwordInput" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Confirm Password : "/>
+                        <h:panelGroup>
+                            <p:password id="confirmPasswordInput" style="width: 280px" required="true"  requiredMessage="Confirm Password cannot be empty." validatorMessage=" Confirm Password must be 5-20 characters in length."
+                                        value="#{usersBean.confirmNewPassword}" > 
+
+                                <f:validateLength maximum="20" minimum="5"   ></f:validateLength>
+                            </p:password><br/>
+                            <p:message id="ms3" for="confirmPasswordInput" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Employee Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="true" id="employeeInputText" style="width: 280px" required="true"  requiredMessage="Employee must be slected." validatorMessage="Employee must be slected."
+                                         value="#{usersBean.selectedEmployee.fullName}" >            
+                                <f:validateLength minimum="2"   ></f:validateLength>
+                            </p:inputText>
+                            <p:message id="ms4" for="employeeInputText" style="color:red" display="text" ></p:message>
+                        </h:panelGroup>
+                        <p:panelGrid styleClass="inputGrid"  columnClasses="" columns="1" >
+                            <h:outputText value="Select Roles" />
+                            <p:pickList id="selectRolesPickList" value="#{usersBean.rolesDualList}" var="rl" itemLabel="#{rl}" itemValue="#{rl}"/>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+
+                    <p:commandButton   id ="btnCreateNewUser" value="Create User" icon="fa fa-fw fa-save" actionListener="#{usersBean.btnCreateNewUser_Handler}" 
+                                       update=":msgs inputForm:inputPanel "> 
+
+                    </p:commandButton>   
+                </p:panel>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

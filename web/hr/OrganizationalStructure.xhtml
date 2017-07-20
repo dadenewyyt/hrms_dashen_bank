@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" globalOnly="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Organizational Structure " >
+                <p:panel id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="nameInputText" style="width: 280px" required="true"  requiredMessage="Name cannot be empty." validatorMessage="Name must be 2-50 characters in length."
+                                            value="#{organizationalStructureBean.orgStruct.name}" > 
+
+                                <f:validateLength maximum="50" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="nameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Type : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu id="typeSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Type must be selected."
+                                             value="#{organizationalStructureBean.orgStruct.organizationalStructureTypeID}" >
+                                <f:selectItem itemLabel="--Select Type--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{organizationalStructureBean.orgStructureTypesSelectItemsList}"  />   
+
+                                <p:ajax event="itemSelect" listener="#{organizationalStructureBean.typeSelectOneMenu_itemSelect}" update="tierSelectOneMenu"/>
+                            </p:selectOneMenu >
+                            <p:message  id="ms2" for="typeSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Parent : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu  id="parentSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Parent must be selected."
+                                              value="#{organizationalStructureBean.orgStruct.parentID}" >
+                                <f:selectItem itemLabel="--Select Parent--" itemValue=""/>
+                                <f:selectItems value ="#{organizationalStructureBean.orgStructureSelectItemsList}" />     
+
+                            </p:selectOneMenu >
+                            <p:message  id="ms3" for="parentSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Tier : "/>
+                        <h:panelGroup>                            
+                            <p:selectOneMenu disabled="#{organizationalStructureBean.orgStructureHasNoTier}" id="tierSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Tier must be selected."
+                                             value="#{organizationalStructureBean.orgStructTier.tierID}" >
+                                <f:selectItem itemLabel="--Select Tier--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{organizationalStructureBean.availableTierSelectItemsList}"  />   
+
+                            </p:selectOneMenu >
+                            <p:message  id="ms4" for="tierSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="City : "/>
+                        <h:panelGroup>                            
+                            <p:selectOneMenu id="citySelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="City must be selected."
+                                             value="#{organizationalStructureBean.orgStruct.city.ID}" >
+                                <f:selectItem itemLabel="--Select City--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{organizationalStructureBean.citySelectItemsList}"  />   
+
+                            </p:selectOneMenu >
+                            <p:message  id="ms5" for="citySelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:commandButton   id ="btnNewORGStructure" value="New"  icon="fa fa-fw fa-plus" > 
+                    <p:ajax event="click" listener="#{organizationalStructureBean.btnNewOrganizationalStructure_Handler}" update=":msgs ms1 ms2 ms3 ms4 ms5 nameInputText typeSelectOneMenu parentSelectOneMenu tierSelectOneMenu citySelectOneMenu organizationalStructuresDataTable"/>
+                </p:commandButton>
+                <p:commandButton   id ="btnSaveOrganizationalStructure" value="Save"  icon="fa fa-fw fa-save" actionListener="#{organizationalStructureBean.btnSaveOrganizationalStructure_Handler}" update=":msgs ms1 ms2 ms3 ms4 ms5 nameInputText typeSelectOneMenu parentSelectOneMenu tierSelectOneMenu citySelectOneMenu organizationalStructuresDataTable"> 
+
+                </p:commandButton> 
+                <p:panel>
+
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{organizationalStructureBean.btnRefreshList_Handler}" process="@this" update=":msgs organizationalStructuresDataTable "> 
+
+                    </p:commandButton> 
+
+                </p:panel>
+                <p:dataTable  id="organizationalStructuresDataTable" var="orgStructure" value="#{organizationalStructureBean.organizationalStructuresList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{orgStructure.id}" selection="#{organizationalStructureBean.selectedOrganizationalStructure}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel" listener="#{organizationalStructureBean.organizationalStructuresDataTable_rowSelected}" />      
+
+                    <p:column  headerText="Name" >
+                        <h:outputText value="#{orgStructure.name}" />                   
+
+                    </p:column>
+                    <p:column  headerText="Parent ID" >
+                        <h:outputText value="#{orgStructure.parentID}" />                   
+
+                    </p:column>
+                    <p:column  headerText="Name" >
+                        <h:outputText value="#{orgStructure.organizationalStructureTypeID}" />                   
+
+                    </p:column>
+                    
+                    <p:column headerText="City" >
+                        <h:outputText value="#{orgStructure.city.name }" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+        <p:dialog id="createRootOfStructureDlg" rendered="#{organizationalStructureBean.rootOfStructureNotCreated}" visible="#{organizationalStructureBean.rootOfStructureNotCreated}" header="Create Structure Root" modal="true" widgetVar="createRootOfStructureDlg" appendTo="@(body)">
+            <h:form>
+                <p:panel>
+                    <h:outputText value="Create Root Of The Structure Hierarchy " />
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="rootNameInputText" style="width: 280px" required="true"  requiredMessage="Name cannot be empty." validatorMessage="Name must be 2-50 characters in length."
+                                            value="#{createRootOfStructureBean.rootOfOrgStructure.name}" > 
+
+                                <f:validateLength maximum="50" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="rootNameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Type : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu id="typeSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Type must be selected."
+                                             value="#{createRootOfStructureBean.rootOfOrgStructure.organizationalStructureTypeID}" >
+                                <f:selectItem itemLabel="--Select Type--" itemValue=""/>
+                                <f:selectItems value ="#{createRootOfStructureBean.orgStructureTypesSelectItemsList}" />   
+
+                            </p:selectOneMenu >
+                            <p:message  id="ms2" for="typeSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:commandButton   id ="btnCreateRootOfOrganizationalStructure" value="Create"  icon="fa fa-fw fa-save" actionListener="#{createRootOfStructureBean.btnCreateRootOfOrganizationalStructure_Handler}" update=":msgs ms1 ms2"> 
+
+                </p:commandButton> 
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

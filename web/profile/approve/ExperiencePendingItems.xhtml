@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employe Experiences Approval">
+                <p:menuButton value="Experience">
+                    <p:menuitem value="Approve" actionListener="#{ experiencePendingItemsBean.approveSelectedRows}" update="pendingExperiencesDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{experiencePendingItemsBean.makeEditableByMaker()}" update="pendingExperiencesDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingExperiencesDataTable" var="tmpE" value="#{experiencePendingItemsBean.pendingTmpExperiences}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              emptyMessage="No Pending Experiences" rowKey="#{tmpE.id}" selection="#{experiencePendingItemsBean.selectedExperienceTmp}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Experiences
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingExperiencesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="single" style="width:40px;text-align:center"/>
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="Name of Employer" >
+                        <h:outputText value="#{tmpE.nameOfEmployer}" />
+                    </p:column>                   
+                    <p:column  headerText="Employer Address" >
+                        <h:outputText value="#{tmpE.employerAddress}" />
+                    </p:column> 
+                    <p:column  headerText="Position" >
+                        <h:outputText value="#{tmpE.position}" />
+                    </p:column> 
+                    <p:column  headerText="Start Date" >
+                        <h:outputText value="#{tmpE.startDate}" />
+                    </p:column> 
+                    <p:column  headerText="End Date" >
+                        <h:outputText value="#{tmpE.endDate}" />
+                    </p:column> 
+                    <p:column  headerText="Total Years" >
+                        <h:outputText value="#{tmpE.totalYearsOfExperience}" />
+                    </p:column> 
+                    <p:column  headerText="Reason for Resignation" >
+                        <h:outputText value="#{tmpE.reasonForResignation}" />
+                    </p:column> 
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpE.tmpStatus}" />
+                    </p:column> 
+                    <p:rowExpansion >
+                        <p:panel>                            
+                            <p:graphicImage   value="#{configuration.EXPERIENCE_DOCUMENTS_PATH}#{tmpE.fileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

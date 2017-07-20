@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" globalOnly="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Organizational Structure Types" >
+                <p:panel>
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="nameInputText" style="width: 280px" required="true"  requiredMessage="Name cannot be empty." validatorMessage="Name must be 2-50 characters in length."
+                                            value="#{organizationalStructureTypeBean.orgSTRType.name}" > 
+
+                                <f:validateLength maximum="50" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="nameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Has Tier : "/>
+                        <p:selectBooleanButton  id="hasTiersSelectBooleanButton"  onLabel="Yes" offLabel="No"   value="#{organizationalStructureTypeBean.orgSTRType.hasTier}" >
+
+                        </p:selectBooleanButton>                  
+
+                    </p:panelGrid>
+                </p:panel>   
+
+                <p:commandButton   id ="btnNewORGStructureType" value="New"  icon="fa fa-fw fa-plus" actionListener="#{organizationalStructureTypeBean.btnNewOrganizationalStructureType_Handler}" update=":msgs ms1 nameInputText hasTiersSelectBooleanButton organizationalStructureTypesDataTable"> 
+
+                </p:commandButton>
+                <p:commandButton   id ="btnSaveOrganizationalStructureType" value="Save"  icon="fa fa-fw fa-save" actionListener="#{organizationalStructureTypeBean.btnSaveOrganizationalStructureType_Handler()}" update=":msgs ms1 nameInputText hasTiersSelectBooleanButton organizationalStructureTypesDataTable"> 
+
+                </p:commandButton> 
+                <p:panel>
+
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{organizationalStructureTypeBean.btnRefreshList_Handler}" process="@this" update=":msgs organizationalStructureTypesDataTable "> 
+
+                    </p:commandButton> 
+
+                </p:panel>
+                <p:dataTable  id="organizationalStructureTypesDataTable" var="type" value="#{organizationalStructureTypeBean.organizationalStructureTypesList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{type.id}" selection="#{organizationalStructureTypeBean.selectedOrganizationalStructureType}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <p:ajax event="rowSelect" update="inputForm:nameInputText inputForm:hasTiersSelectBooleanButton  " listener="#{organizationalStructureTypeBean.organizationalStructureTypesDataTable_rowSelected}" />      
+
+                    <p:column  headerText="Name" >
+                        <h:outputText value="#{type.name}" />                   
+
+                    </p:column>
+                    <p:column  headerText="Has Tiers" >
+                        <h:outputText value="#{type.hasTier}" />                   
+
+                    </p:column>                    
+                </p:dataTable>
+
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

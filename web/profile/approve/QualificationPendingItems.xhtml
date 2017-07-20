@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employe Qualifications Approval">
+                <p:menuButton value="Qualification">
+                    <p:menuitem value="Approve" actionListener="#{qualificationPendingItemsBean.approveSelectedRows}" update="pendingQualifcationsDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{qualificationPendingItemsBean.makeEditableByMaker()}" update="pendingQualifcationsDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingQualifcationsDataTable" var="quaTmp" value="#{qualificationPendingItemsBean.pendingTmpQualifications}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              emptyMessage="No Pending Qualifications" rowKey="#{quaTmp.id}" selection="#{qualificationPendingItemsBean.selectedQualificationTmp}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Qualifications
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingQualifcationsDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="single" style="width:40px;text-align:center"/>
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="Employee Name" >
+                        <h:outputText value="#{quaTmp.ownerEmployee.fullName}" />                   
+
+                    </p:column>
+                    <p:column   headerText="Qualification" >
+                        <h:outputText value="#{quaTmp.qualification}" />                   
+
+                    </p:column>
+                    <p:column   headerText="Qualification Level" >
+                        <h:outputText value="#{quaTmp.qualificationLevel}" />                  
+
+                    </p:column>
+                    <p:column   headerText="CGPA" >
+                        <h:outputText value="#{quaTmp.CGPA}" />                   
+
+                    </p:column>
+                    <p:column   headerText="Institution" >
+                        <h:outputText value="#{quaTmp.institution.name}" />                  
+
+                    </p:column>
+                    <p:column   headerText="Start Date" >
+                        <h:outputText value="#{quaTmp.startDate}" />                  
+
+                    </p:column>
+                    <p:column   headerText="Date Of Graduation" >
+                        <h:outputText value="#{quaTmp.dateOfGraduation}" />                  
+
+                    </p:column>
+                    <p:column   headerText="Temp Status" >
+                        <h:outputText value="#{quaTmp.tmpStatus}" />                  
+
+                    </p:column>
+                    <p:column   headerText="Maker" >
+                        <h:outputText value="#{quaTmp.makerID}" />                  
+
+                    </p:column>
+                    <p:rowExpansion > 
+                        <p:panel rendered="#{quaTmp.tmpDocumentUploaded}">                            
+                            <p:graphicImage   value="#{configuration.QUALIFICATION_DOCUMENTS_PATH}#{quaTmp.tmpDocumentFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

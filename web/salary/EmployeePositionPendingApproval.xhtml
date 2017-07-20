@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Positions Pending Approval">
+                <p:menuButton value="Employee Position">
+                    <p:menuitem value="Approve" actionListener="#{employeePositionsPendingApprovalBean.approveSelectedRows}" update="pendingEmployeePositionsDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{employeePositionsPendingApprovalBean.makeEditableByMaker()}" update="pendingEmployeePositionsDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingEmployeePositionsDataTable" var="empPosTmp" value="#{employeePositionsPendingApprovalBean.pendingTmpEmployeePositions}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              rowKey="#{empPosTmp.ID}" selection="#{employeePositionsPendingApprovalBean.selectedEmployeePositionTmps}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Employee Positions
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingEmployeePositionsDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText=" " style="width:50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width:50px" />
+                    </p:column>
+                    <p:column  headerText="Employee" >
+                        <h:outputText value="#{empPosTmp.employee.getFullName()}" />
+                    </p:column>
+                    <p:column headerText="Position">
+                        <h:outputText value="#{empPosTmp.position.title}"/>
+                    </p:column>
+                    <p:column headerText="Organizational Structure">
+                        <h:outputText value="#{employeePositionBean.isEmpPositionHasOrgStruct(empPosTmp) eq true ? employeePositionBean.getEmpPositionOrgStructByID(empPosTmp.getID()).getOrganizationalStructure().getName() : '-'}"/>
+                    </p:column>
+                    <p:column headerText="Level">
+                        <h:outputText value="#{employeePositionBean.isEmpPosHasSalaryScale(empPosTmp) eq true ? employeePositionBean.getEmpPosSalaryScaleByID(empPosTmp.getID()).getSalaryScale().getLevel().getLevel() : '-'}"/>
+                    </p:column>
+                    <p:column headerText="Temp Status" >
+                        <h:outputText value="#{empPosTmp.tmpStatus}" />
+                    </p:column>
+                    <p:column headerText="Maker" >
+                        <h:outputText value="#{empPosTmp.createdBy}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

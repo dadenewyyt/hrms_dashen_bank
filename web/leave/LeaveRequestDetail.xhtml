@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Leave Request Details" >
+                <p:panelGrid >
+                    <p:row style="border: none">
+                        <p:column rowspan="8">
+                            <p:graphicImage id="profilePhotoGImage" url="/resources/images/photo.jpeg" height="200" width="200"  >
+                            </p:graphicImage>
+                        </p:column> 
+
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column  style="text-align: right">
+                            <h:outputText value="Leave Type :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{leaveRequestDetailBean.leaveRequest.leaveType.title}" />
+                        </p:column>
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Request Date from :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{leaveRequestDetailBean.leaveRequest.date_from}" />
+                        </p:column>
+                    </p:row >
+                     <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Request Date To :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{leaveRequestDetailBean.leaveRequest.date_to}" />
+                        </p:column>
+                    </p:row >
+                     <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Request Approved Date :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{leaveRequestDetailBean.leaveRequest.approved_date}" />
+                        </p:column>
+                    </p:row >
+                   
+                    <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Employee ID :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{leaveRequestDetailBean.leaveRequest.leaveRequestOwner.employeeID}" />
+                        </p:column>
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column style="text-align: right" >
+                            <h:outputText value="Reason :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{leaveRequestDetailBean.leaveRequest.reason}" />
+                        </p:column>
+                    </p:row>
+
+                  </p:panelGrid>
+               </p:panel>
+        </h:form>
+        
+          <h:form>
+              <p:dataTable var="car" value="#{leaveRequestDetailBean.leaveRequest}" rows="10"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+        <p:column headerText="Id">
+            <h:outputText value="#{car.id}" />
+        </p:column>
+ 
+        <p:column headerText="Leave Type">
+            <h:outputText value="#{car.leaveType.title}" />
+        </p:column>
+                
+        <p:column headerText="Date From">
+            <h:outputText value="#{car.date_from}" />
+        </p:column>
+ 
+        <p:column headerText="Date To">
+            <h:outputText value="#{car.date_to}" />
+        </p:column>
+ 
+        <p:column headerText="Leave Reason">
+            <h:outputText value="#{car.reason}" />
+        </p:column>
+                
+        
+    </p:dataTable>
+</h:form>
+    </ui:define>
+
+</ui:composition>

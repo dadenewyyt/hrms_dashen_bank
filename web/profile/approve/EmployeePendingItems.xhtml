@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employe Approval">                
+                <p:menuButton value="Employee">
+                    <p:menuitem value="Approve" actionListener="#{employeePendingItemsBean.approveSelectedRows}" update="pendingEmployeesDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{employeePendingItemsBean.makeEditableByMaker}" update="pendingEmployeesDataTable" />
+                </p:menuButton>
+
+                <p:dataTable  id="pendingEmployeesDataTable" var="empTmp" value="#{employeePendingItemsBean.pendingEmployeeItems}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              emptyMessage="No Pending Employees" rowKey="#{empTmp.serialID}" selection="#{employeePendingItemsBean.selectedEmployeeTmps}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Employees
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingEmployeesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+
+                     <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="Employee ID" >
+                        <h:outputText value="#{empTmp.employeeID}" />                   
+
+                    </p:column>
+                    <p:column  headerText="First Name" >
+                        <h:outputText value="#{empTmp.firstName}" />                      
+
+                    </p:column>
+                    <p:column  headerText="Middle Name" >
+                        <h:outputText value="#{empTmp.middleName}" />                      
+
+                    </p:column>
+                    <p:column  headerText="Last Name" >
+                        <h:outputText value="#{empTmp.lastName}" />                         
+
+                    </p:column>
+                    <p:column  headerText="File Index Number" >
+                        <h:outputText value="#{empTmp.fileIndexNumber}" />                     
+
+                    </p:column>                    
+                    <p:column  headerText="Gender" >
+                        <h:outputText value="#{empTmp.gender}" />                    
+
+                    </p:column>
+                    <p:column  headerText="Date of Birth" >
+                        <h:outputText value="#{empTmp.dateOfBirth}" />                    
+
+                    </p:column>
+
+                    <p:column  headerText="Date of Employement" >
+                        <h:outputText value="#{empTmp.dateOfEmployement}" />                    
+
+                    </p:column>
+                    <p:column  headerText="Emergency Contact" >
+                        <h:outputText value="#{empTmp.emergecyContact}" />                    
+
+                    </p:column>  
+                    <p:column  headerText="Marital Status" >
+                        <h:outputText value="#{empTmp.maritalStatus}" />                    
+
+                    </p:column>  
+                    <p:column  headerText="Status" >
+                        <h:outputText value="#{empTmp.status}" />                    
+
+                    </p:column>
+                    <p:column  headerText="Maker" >
+                        <h:outputText value="#{empTmp.makerID}" />                    
+
+                    </p:column>
+                    <p:column  headerText="Maker Date" >
+                        <h:outputText value="#{empTmp.makerDate}" />                    
+
+                    </p:column>
+                    <p:column  headerText="Maker Date" >
+                        <h:outputText value="#{empTmp.makerDate}" />                    
+
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{empTmp.tmpStatus}" />                    
+
+                    </p:column>                   
+                    <p:rowExpansion > 
+
+                        <p:panel header="Uploaded Profile Photo" rendered="#{empTmp.tmpPhotoUploaded}" toggleable="true">                            
+                            <p:graphicImage   value="#{configuration.PROFILE_PHOTO_PATH}#{empTmp.tmpPhotoFileName}" height="200" width="200"  />     
+                        </p:panel>
+                        <p:panel header="Uploaded Marital Status Documents" rendered="#{empTmp.tmpMaritalStatusUploaded}" toggleable="true">                            
+                            <p:graphicImage   value="#{configuration.MARITAL_STATUS_DOCUMENTS_PATH}#{empTmp.tmpMaritalStatusFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+
+                </p:dataTable>   
+            </p:panel> 
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" globalOnly="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Roles" >
+                <p:panel header="Role" >
+                    <p:panel  id="inputPanel">
+                        <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="2" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                            <h:outputText value="Role Name : "/>
+                            <h:panelGroup>
+                                <p:inputText id="roleNameInputText" style="width: 280px" required="true"  requiredMessage="Role Name cannot be empty." validatorMessage="Role Name must be 5-40 characters in length."
+                                             value="#{rolesBean.newRoleName}" > 
+
+                                    <f:validateLength maximum="40" minimum="5"   ></f:validateLength>
+                                </p:inputText><br/>
+                                <p:message id="ms1" for="roleNameInputText" style="color:red" display="text"></p:message>
+                            </h:panelGroup> 
+                            <h:outputText value="Description : "/>
+                            <h:panelGroup>
+                                <p:inputText id="descriptionInputText" style="width: 280px" required="true"  requiredMessage="Description cannot be empty." validatorMessage="Description must be 5-200 characters in length."
+                                             value="#{rolesBean.newRoleDescription}" > 
+
+                                    <f:validateLength maximum="200" minimum="5"   ></f:validateLength>
+                                </p:inputText><br/>
+                                <p:message id="ms2" for="descriptionInputText" style="color:red" display="text"></p:message>
+                            </h:panelGroup> 
+                        </p:panelGrid>
+                        <p:panelGrid styleClass="inputGrid"  columnClasses="" columns="1" >
+                            <h:outputText value="Select Permissions" />
+                            <p:pickList id="selectPermissionsPickList" value="#{rolesBean.permissions}" var="pr" itemLabel="#{pr}" itemValue="#{pr}" showSourceFilter="true" showTargetFilter="true"/>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="inputActionPanel"> 
+
+                        <p:commandButton   id ="btnCreateNewRole" value="Create Role" icon="fa fa-fw fa-save" actionListener="#{rolesBean.btnCreateNewRole_Handler}" 
+                                           update=":msgs inputForm:inputPanel "> 
+
+                        </p:commandButton>   
+                    </p:panel>
+                </p:panel>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

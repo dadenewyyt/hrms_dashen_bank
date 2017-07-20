@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../masterTemplate.xhtml">
+            <ui:define name="content">
+                <p:growl id="messages" showDetail="true"  /> 
+                <p:panel id="pnlRegPageHeading" styleClass="#{transferBean.pnlRegPageHeadingRender ? 'show' : 'hide'}">Register Transfer Requests</p:panel>
+                <p:panel id="pnlAppPageHeading" styleClass="#{transferBean.pnlAppPageHeadingRender ? 'show' : 'hide'}">Approve Transfer Requests</p:panel>
+                <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlInputFields" styleClass="#{transferBean.pnlInputFieldsRender ? 'show' : 'hide'}">
+                        <p:panelGrid styleClass="inputGrid" columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                            <h:outputText value="Employee Name : "/>
+                            <p:selectOneMenu id="empSelectOneMenu" style="width:250px" autoWidth="false" filter="true" value="#{transferBean.newTra.employee.employeeSerialID}" required="true"  requiredMessage="Please Select an Emplyee.">
+                                <f:selectItem itemLabel="--Select Employee--" itemValue=""/>
+                                <f:selectItems value ="#{transferBean.empSelectItem}" />                               
+                            </p:selectOneMenu>
+                            <h:outputText value="Organizational Structure : "/>
+                            <p:selectOneMenu id="orgStrSelectOneMenu" style="width:250px" autoWidth="false" filter="true" value="#{transferBean.newTra.organizationalStructure.id}" required="true"  requiredMessage="Please Select Organizational Structure.">
+                                <f:selectItem itemLabel="--Select Organizational Structure--" itemValue=""/>
+                                <f:selectItems value ="#{transferBean.orgStrSelectItem}" />
+                                <p:ajax event="itemSelect" listener="#{transferBean.orgStrDrpDnOnMakerSideValueChangeListener}" update="inputForm:posSelectOneMenu" ></p:ajax>
+                            </p:selectOneMenu >
+                            <h:outputText value="Requesting Position : "/>
+                            <p:selectOneMenu id="posSelectOneMenu" style="width:250px" autoWidth="false" filter="true" value="#{transferBean.newTra.position.ID}" required="true"  requiredMessage="Please Select Position.">
+                                <f:selectItem itemLabel="--Select Position--" itemValue=""/>
+                                <f:selectItems value ="#{transferBean.posSelectItem}" />                               
+                            </p:selectOneMenu >
+                            <h:outputText value="Date : "/>
+                            <p:calendar id= "requestingDate" pattern="dd-MMM-yyyy"  value="#{transferBean.newTra.requestedDateInDate}" showOn="button" readonlyInput="true"></p:calendar>
+                       </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="pnlMakerDataTbl" styleClass="#{transferBean.pnlMakerDataTblRender ? 'show' : 'hide'}">
+                        <p:dataTable  id="unApprovedlstOfTransferRequests" var="makerTraReqts" value="#{transferBean.objLstOfTransferRequests}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{makerTraReqts.id}" selection="#{transferBean.selectedRow}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="inputForm:empSelectOneMenu inputForm:requestingDate inputForm:orgStrSelectOneMenu inputForm:posSelectOneMenu" listener="#{transferBean.makerDataTblRowSelected}" />                             
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{makerTraReqts.employee.fullName}" />
+                                <h:outputText value="->" styleClass="#{makerTraReqts.unapprovedEmployeeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{makerTraReqts.unapprovedEmployee.fullName}" styleClass="#{makerTraReqts.unapprovedEmployeeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{makerTraReqts.organizationalStructure.name}" />
+                                <h:outputText value="->" styleClass="#{makerTraReqts.unapprovedOrganizationalStructureArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{makerTraReqts.unapprovedOrganizationalStructure.name}" styleClass="#{makerTraReqts.unapprovedOrganizationalStructureDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Requesting Position" >
+                                <h:outputText value="#{makerTraReqts.position.title}" />
+                                <h:outputText value="->" styleClass="#{makerTraReqts.unapprovedPositionArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{makerTraReqts.unapprovedPosition.title}" styleClass="#{makerTraReqts.unapprovedPositionDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Request Date" >
+                                <h:outputText value="#{makerTraReqts.requestedDate}" />
+                                <h:outputText value="->" styleClass="#{makerTraReqts.unapprovedRequestedDateArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{makerTraReqts.unapprovedRequestedDate}" styleClass="#{makerTraReqts.unapprovedRequestedDateDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlMakerApprovedReqtsDataTbl" styleClass="#{transferBean.pnlMakerApprovedReqtsDataTblRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:dataTable  id="lstOfApprovedTransferRequestsbyMakerSide" var="makerAppTraReqts" value="#{transferBean.objAppLstOfTransferRequests}" selectionMode="single" rowIndexVar="rowIndex"  rowKey="#{makerAppTraReqts.id}" selection="#{transferBean.appReqtsSelectedRow}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="inputForm:empSelectOneMenu inputForm:requestingDate inputForm:orgStrSelectOneMenu inputForm:posSelectOneMenu" listener="#{transferBean.makerApprovedReqtsDataTblRowSelected}" />
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{makerAppTraReqts.employee.fullName}" />                   
+                            </p:column>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{makerAppTraReqts.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Requesting Position" >
+                                <h:outputText value="#{makerAppTraReqts.position.title}" />                   
+                            </p:column>
+                            <p:column  headerText="Request Date" >
+                                <h:outputText value="#{makerAppTraReqts.requestedDate}" />                   
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlBtn" styleClass="#{transferBean.pnlBtnRender ? 'show' : 'hide'}">          
+                        <p:commandButton   id ="btnNewTransfer" value="Reset"  icon="fa fa-fw fa-plus" actionListener="#{transferBean.btnNewTransferHandler}" update=":messages inputForm:unApprovedlstOfTransferRequests inputForm:lstOfApprovedTransferRequestsbyMakerSide inputForm:empSelectOneMenu inputForm:requestingDate inputForm:orgStrSelectOneMenu inputForm:posSelectOneMenu"> </p:commandButton>
+                        <p:commandButton   id ="btnSaveTransfer" value="Save"  icon="fa fa-fw fa-save" actionListener="#{transferBean.btnSaveTransferHandler}" update=":messages inputForm:unApprovedlstOfTransferRequests inputForm:lstOfApprovedTransferRequestsbyMakerSide inputForm:empSelectOneMenu inputForm:requestingDate inputForm:orgStrSelectOneMenu inputForm:posSelectOneMenu"></p:commandButton>
+                        <p:commandButton   id ="btnSubmitTransfer" value="Submit"  icon="fa fa-fw fa-save" actionListener="#{transferBean.btnSubmitTransferHandler}" update=":messages inputForm:unApprovedlstOfTransferRequests inputForm:lstOfApprovedTransferRequestsbyMakerSide inputForm:empSelectOneMenu inputForm:requestingDate inputForm:orgStrSelectOneMenu inputForm:posSelectOneMenu"> </p:commandButton>
+                        <p:commandButton   id ="btnDeleteTransfer" value="Delete"  icon="fa fa-fw fa-remove" actionListener="#{transferBean.btnDeleteTransferHandler}" update=":messages inputForm:unApprovedlstOfTransferRequests inputForm:lstOfApprovedTransferRequestsbyMakerSide inputForm:empSelectOneMenu inputForm:requestingDate inputForm:orgStrSelectOneMenu inputForm:posSelectOneMenu">
+                            <p:confirm icon="ui-icon-alert" header="Delete Transfer" message="Are you sure you want to delete the selected Transfer?"/>
+                        </p:commandButton>
+                    </p:panel>
+                </h:form>
+                <h:form id="AppinputForm" onkeypress="return event.keyCode !== 13;">           
+                    <p:panel id="pnlApproverDataTbl" styleClass="#{transferBean.pnlApproverDataTblRender ? 'show' : 'hide'}">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Approve" actionListener="#{transferBean.approveSelectedRows}" update=":messages AppinputForm:lstOfTransferRequests AppinputForm:lstOfApprovedTransferRequestsbyChekerSide" />
+                            <p:menuitem value="Make Editable" actionListener="#{transferBean.makeEditableByMaker}" update=":messages AppinputForm:lstOfTransferRequests AppinputForm:lstOfApprovedTransferRequestsbyChekerSide" />
+                        </p:menuButton>
+                        <p:dataTable  id="lstOfTransferRequests" var="traReqts" value="#{transferBean.objLstOfTransferRequests}" rowIndexVar="rowIndex"  rowKey="#{traReqts.id}" selection="#{transferBean.selectedRows}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{traReqts.employee.fullName}" />  
+                                <h:outputText value="->" styleClass="#{traReqts.unapprovedEmployeeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{traReqts.unapprovedEmployee.fullName}" styleClass="#{traReqts.unapprovedEmployeeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{traReqts.organizationalStructure.name}" />
+                                <h:outputText value="->" styleClass="#{traReqts.unapprovedOrganizationalStructureArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{traReqts.unapprovedOrganizationalStructure.name}" styleClass="#{makerTraReqts.unapprovedOrganizationalStructureDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Requesting Position" >
+                                <h:outputText value="#{traReqts.position.title}" /> 
+                                <h:outputText value="->" styleClass="#{traReqts.unapprovedPositionArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{traReqts.unapprovedPosition.title}" styleClass="#{traReqts.unapprovedPositionDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Request Date" >
+                                <h:outputText value="#{traReqts.requestedDate}" /> 
+                                <h:outputText value="->" styleClass="#{traReqts.unapprovedRequestedDateArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{traReqts.unapprovedRequestedDate}" styleClass="#{traReqts.unapprovedRequestedDateDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{traReqts.createdBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{traReqts.creationTimeStamp}" />                   
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{traReqts.editedBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{traReqts.editingTimeStamp}" />                   
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlApproverApprovedReqtsDataTbl" styleClass="#{transferBean.pnlApproverApprovedReqtsDataTblRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Delete" actionListener="#{transferBean.deleteSelectedRows}" update=":messages AppinputForm:lstOfTransferRequests AppinputForm:lstOfApprovedTransferRequestsbyChekerSide" />
+                        </p:menuButton>
+                        <p:dataTable  id="lstOfApprovedTransferRequestsbyChekerSide" var="approverAppTraReqts" value="#{transferBean.objAppLstOfTransferRequests}" rowIndexVar="rowIndex"  rowKey="#{approverAppTraReqts.id}" selection="#{transferBean.appselectedRows}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{approverAppTraReqts.employee.fullName}" />                   
+                            </p:column>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{approverAppTraReqts.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Requesting Position" >
+                                <h:outputText value="#{approverAppTraReqts.position.title}" />                   
+                            </p:column>
+                            <p:column  headerText="Request Date" >
+                                <h:outputText value="#{approverAppTraReqts.requestedDate}" />                   
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{approverAppTraReqts.createdBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{approverAppTraReqts.creationTimeStamp}" />                   
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{approverAppTraReqts.editedBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{approverAppTraReqts.editingTimeStamp}" />                   
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

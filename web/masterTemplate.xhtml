@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/bootstrap.min.css"></link>      
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/bootstrap-theme.min.css"></link>
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/default.css"></link>
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/cssLayout.css"></link>
+        <title>Human Resource Management System</title>
+    </h:head>
+
+    <h:body>
+        <p:layout fullPage="true" > 
+            <p:layoutUnit position="north"  gutter="4"  >     
+
+                <h:form>
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:graphicImage url="/resources/images/logo.jpg" width="80" height="80"/>
+
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton  value="#{masterTemplateBean.loggedInUser.username} - (#{masterTemplateBean.loggedInUser.employee.fullName})"  id="btnUser"/> 
+                            <p:overlayPanel appendToBody="true" id="imagePanel" for="btnUser" >
+                                <p:menubar   >
+                                    <p:menuitem value="Log out" url="/logout.xhtml" icon="ui-icon-extlink"  ajax="false"/>
+                                </p:menubar>
+                            </p:overlayPanel>
+                        </f:facet>
+                    </p:toolbar>
+                </h:form>
+            </p:layoutUnit> 
+            <p:layoutUnit position="west" size="260" resizable="true" minSize="100" maxSize="300">                                      
+                <h:form id="form1">
+                    <p:tree animate="true" draggable="true" droppable="true" selectionMode="single" style="width:max-content; border:none; position: absolute" 
+                            dynamic="true" id ="tree1" value="#{menuBean.root}" var="node" orientation="vertical"> 
+                        <p:treeNode expandedIcon="ui-icon ui-icon-folder-open"
+                                    collapsedIcon="ui-icon ui-icon-folder-collapsed">
+                            <h:outputText value="#{node.description}"/>                             
+                        </p:treeNode>
+                        <p:treeNode type="document" icon="ui-icon ui-icon-document">
+                            <h:outputText value="#{node.description}"/>                           
+                        </p:treeNode>
+                        <p:ajax event="select" listener="#{menuBean.onNodeSelect}"></p:ajax>
+                        <p:ajax event="unselect" listener="#{menuBean.onNodeUnSelect}"></p:ajax>
+                        <p:ajax event="expand" listener="#{menuBean.onNodeExpand}"></p:ajax>
+                        <p:ajax event="collapse" listener="#{menuBean.onNodeCollapse}"></p:ajax>
+                    </p:tree>  
+
+                </h:form>
+            </p:layoutUnit>
+            <p:layoutUnit position="center">
+                <ui:insert name="content">Content</ui:insert>
+            </p:layoutUnit>            
+            <p:layoutUnit position="south" size="6%" >                
+                <p:ajaxStatus>
+                    <f:facet name="start">
+                        <p:graphicImage height="40px;" name="status.gif" />
+                    </f:facet>                    
+                </p:ajaxStatus>
+            </p:layoutUnit> 
+        </p:layout> 
+        <h:form>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+
+</html>

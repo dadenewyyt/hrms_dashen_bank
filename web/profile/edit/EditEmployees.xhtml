@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employees ">    
+                <p:panel header="Find Employee" toggleable="true" collapsed="true" >
+
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedEmployee" value="Edit">
+                            <p:ajax event="click" listener="#{editEmployeesBean.btnEditSelectedEmployeeFromSerchResutls_Handler}"  process="@this searchResultsDataTable"  update=":msgs inputForm:inputPanel btnSaveEmployee" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable  id="searchResultsDataTable" var="varEmp" value="#{searchEmployeeBean.lazyEmployeeModel}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" emptyMessage="No employees found."
+                                  rowKey="#{emp.employeeSerialID}" selection="#{editEmployeesBean.selectedEmployeeFromSearchResults}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" lazy="true"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+
+                        <p:column headerText="Employee ID" sortBy="#{varEmp.employeeID}" filterBy="#{varEmp.employeeID}">
+                            #{varEmp.employeeID}
+                        </p:column>
+                        <p:column  headerText="Name" sortBy="#{varEmp.firstName}" filterBy="#{varEmp.firstName}" >
+                            <h:outputText value="#{varEmp.firstName}" />                   
+
+                        </p:column>
+                        <p:column  headerText="Middle Name" sortBy="#{varEmp.middleName}" filterBy="#{varEmp.middleName}" >
+                            <h:outputText value="#{varEmp.middleName}" />                      
+
+                        </p:column>
+                        <p:column  headerText="Last Name" sortBy="#{varEmp.lastName}" filterBy="#{varEmp.lastName}" >
+                            <h:outputText value="#{varEmp.lastName}"  />                      
+
+                        </p:column>   
+                        <p:column headerText="File Index No." sortBy="#{varEmp.fileIndexNumber}" filterBy="#{varEmp.fileIndexNumber}">
+                            #{varEmp.fileIndexNumber}
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="First Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeesBean.rowSubmitted}"   id="firstNameInputText" style="width: 280px" required="true"  requiredMessage="First Name cannot be empty." validatorMessage="First Name must be 2-40 characters in length."
+                                         value="#{editEmployeesBean.currentTempEmp.firstName}" > 
+
+                                <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="firstNameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Middle Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeesBean.rowSubmitted}" id="middleNameInputText" style="width: 280px" required="true"  requiredMessage="Middle Name cannot be empty." validatorMessage="Middle Name must be 2-40 characters in length."
+                                         value="#{editEmployeesBean.currentTempEmp.middleName}" >            
+                                <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                            </p:inputText>
+                            <p:message id="ms2" for="middleNameInputText" style="color:red" display="text" ></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Last Name : "/>
+                        <h:panelGroup>                        
+                            <p:inputText disabled="#{editEmployeesBean.rowSubmitted}" id="lastNameInputText" style="width: 280px" required="true"  requiredMessage="Last Name cannot be empty." validatorMessage="Last Name must be 2-40 characters in length."
+                                         value="#{editEmployeesBean.currentTempEmp.lastName}" >            
+                                <f:validateLength maximum="40" minimum="2"  ></f:validateLength>
+
+                            </p:inputText>
+                            <p:message id="ms3"   for="lastNameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Employee ID : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeesBean.rowSubmitted}" id="employeIDInputText" style="width: 280px"  maxlength="20" required="true" requiredMessage="Employee ID cannot be empty."
+                                         value="#{editEmployeesBean.currentTempEmp.employeeID}" >            
+
+                            </p:inputText>
+                            <p:message id="ms4"   for="employeIDInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="File Index Number : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeesBean.rowSubmitted}" id="fileIndexNumberInputText" style="width: 280px" maxlength="20" required="true"  requiredMessage="File Index Number cannot be empty."
+                                         value="#{editEmployeesBean.currentTempEmp.fileIndexNumber}" >            
+
+                            </p:inputText>
+                            <p:message id="ms5"   for="fileIndexNumberInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Gender : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{editEmployeesBean.rowSubmitted}" id="genderSelectOneMenu" style="width:250px" autoWidth="false"  required="true" requiredMessage="Gender must be selected."
+                                             value="#{editEmployeesBean.currentTempEmp.gender}">
+                                <f:selectItem noSelectionOption="true" itemLabel="--Select Gender--" itemValue=""/>
+                                <f:selectItems value="#{enumValues.genderValues}" />   
+
+                            </p:selectOneMenu >
+                            <p:message   id="ms6" for="genderSelectOneMenu" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Date of Birth : "/>
+                        <p:calendar disabled="#{editEmployeesBean.rowSubmitted}" readonlyInput="true" id="birthDateCalendar" pattern="dd-MMM-yyyy" size="35" rendered="true"
+                                    value="#{editEmployeesBean.currentTempEmp.dateOfBirth}" >    
+                        </p:calendar>
+                        <h:outputText value="Date of Employement : "/>                   
+                        <p:calendar disabled="#{editEmployeesBean.rowSubmitted}" readonlyInput="true" id="employmentDateCalendar" pattern="dd-MMM-yyyy" size="35"  required="true"
+                                    value="#{editEmployeesBean.currentTempEmp.dateOfEmployement}" >    
+                        </p:calendar>                        
+                        <h:outputText value="Job Classification : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{editEmployeesBean.rowSubmitted}" id="jobClasificationSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Job Classification must be selected."
+                                             value="#{editEmployeesBean.currentTempEmp.jobClasificationID}" >
+                                <f:selectItem itemLabel="--Select Job Clasification--" itemValue=""/>
+                                <f:selectItems value ="#{editEmployeesBean.jobClassificationList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms7" for="jobClasificationSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Emergecy Contact : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeesBean.rowSubmitted}" id="emergecyContactInputText" style="width: 280px" maxlength="40" required="true" requiredMessage="Emergency Contact cannot be empty."
+                                         value="#{editEmployeesBean.currentTempEmp.emergecyContact}" >            
+
+                            </p:inputText>
+                            <p:message  id="ms8" for="emergecyContactInputText" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Marital Status : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{editEmployeesBean.rowSubmitted}" id="maritalStatusSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Marital Status must be selected."
+                                             value="#{editEmployeesBean.currentTempEmp.maritalStatus}" >
+                                <f:selectItem noSelectionOption="true" itemLabel="--Select Marital Status--" itemValue=""/>
+                                <f:selectItems value="#{enumValues.maritalStatusValues}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms9" for="maritalStatusSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton   id ="btnNewEmployee" value="New"  icon="fa fa-fw fa-plus" actionListener="#{editEmployeesBean.btnNewEmployee_Handler}" update=":msgs inputForm:inputPanel btnSaveEmployee"> 
+
+                    </p:commandButton>
+                    <p:commandButton   id ="btnSaveEmployee" value="Save" disabled="#{editEmployeesBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{editEmployeesBean.btnSaveEmployee_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel employeesDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">
+
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" > 
+                        <p:ajax event="click" listener="#{editEmployeesBean.btnRefreshList_Handler}" update=":msgs  inputForm:inputPanel inputForm:actionsPanel employeesDataTable "/>
+                    </p:commandButton> 
+                    <p:commandButton disabled="#{editEmployeesBean.rowSubmitted}" value="Change / Upload profile photo" type="button" onclick="PF('photoUploadDlg').show()" />
+                    <p:commandButton disabled="#{editEmployeesBean.rowSubmitted}" id="btnRemoveUploadedPhoto" value="Remove Uploaded profile photo" >
+                        <p:ajax event="click" listener="#{editEmployeesBean.btnRemoveUploadedPhoto_Handler}" update=":msgs employeesDataTable"/>
+                    </p:commandButton>
+                    <p:commandButton disabled="#{editEmployeesBean.rowSubmitted}" value="Change / Upload Marital Status Document" type="button" onclick="PF('maritalStatusUploadDlg').show()" />
+                    <p:commandButton disabled="#{editEmployeesBean.rowSubmitted}" id="btnRemoveUploadedMaritalStatusDocument" value="Remove Uploaded Marital Status Document" >
+                        <p:ajax event="click" listener="#{editEmployeesBean.btnRemoveUploadedMaritalStatusDocument_Handler()}" update=":msgs employeesDataTable"/>
+                    </p:commandButton>                    
+                    <p:commandButton  disabled="#{editEmployeesBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{editEmployeesBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel employeesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{editEmployeesBean.rowSubmitted}" value="Delete Row" actionListener="#{editEmployeesBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel employeesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+
+                </p:panel>
+                <p:dataTable  id="employeesDataTable" var="emp" value="#{editEmployeesBean.tmpEmployeesList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              emptyMessage="No Employees" rowKey="#{emp.serialID}" selection="#{editEmployeesBean.selectedTmpEmployee}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Employees
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="employeesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel photoUploadDlg" listener="#{editEmployeesBean.employeesDataTable_rowSelected}" />                             
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="Employee ID" >
+                        <h:outputText value="#{emp.employeeID}" />                    
+
+                    </p:column> 
+                    <p:column  headerText="First Name" >
+                        <h:outputText value="#{emp.firstName}" />                   
+
+                    </p:column>
+                    <p:column  headerText="Middle Name" >
+                        <h:outputText value="#{emp.middleName}" />                      
+
+                    </p:column>
+                    <p:column  headerText="Last Name" >
+                        <h:outputText value="#{emp.lastName}" />                      
+
+                    </p:column>
+                    <p:column  headerText="File Index No." >
+                        <h:outputText value="#{emp.fileIndexNumber}" />                         
+
+                    </p:column>                                      
+                    <p:column  headerText="Gender" >
+                        <h:outputText value="#{emp.gender}"  />                     
+
+                    </p:column>
+                    <p:column  headerText="File Index No." >
+                        <h:outputText value="#{emp.fileIndexNumber}"  />                     
+
+                    </p:column>
+                    <p:column  headerText="Record Status" >
+                        <h:outputText value="#{emp.tmpStatus}"  />                     
+
+                    </p:column>
+
+                    <p:rowExpansion > 
+
+                        <p:panel header="Uploaded Profile Photo" rendered="#{emp.tmpPhotoUploaded}" toggleable="true">                            
+                            <p:graphicImage   value="#{configuration.PROFILE_PHOTO_PATH}#{emp.tmpPhotoFileName}" height="200" width="200"  />     
+                        </p:panel>
+                        <p:panel header="Uploaded Marital Status Documents" rendered="#{emp.tmpMaritalStatusUploaded}" toggleable="true">                            
+                            <p:graphicImage   value="#{configuration.MARITAL_STATUS_DOCUMENTS_PATH}#{emp.tmpMaritalStatusFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+
+                </p:dataTable>                
+            </p:panel>
+        </h:form>
+        <p:dialog id="photoUploadDlg" header="Upload Photo" modal="true" widgetVar="photoUploadDlg" appendTo="@(body)">
+            <h:form>
+                <p:panel>
+                    <h:outputText value="Change Profiele photo for #{editEmployeesBean.selectedTmpEmployee.fullName}" />
+                    <p:panel header="" >
+                        <h:form enctype="multipart/form-data"> 
+                            <p:fileUpload   uploadLabel="Upload Photo" fileUploadListener="#{editEmployeesBean.uploadProfilePhoto_Handler}"   oncomplete="PF('photoUploadDlg').hide()"
+                                            label="Choose Photo" fileLimit="1" fileLimitMessage="Please upload only one photo."   sizeLimit="2000000" 
+                                            invalidSizeMessage="File size must be less than 2 MB." allowTypes="/(\.|\/)(gif|jpe?g|png)$/" invalidFileMessage="Invalid file format." >                                 
+                            </p:fileUpload>                
+                        </h:form>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </p:dialog> 
+        <p:dialog id="maritalStatusUploadDlg" header="Upload Marital Status" modal="true" widgetVar="maritalStatusUploadDlg" appendTo="@(body)">
+            <h:form>
+                <p:panel>
+                    <h:outputText value="Change Marital Status document for #{editEmployeesBean.selectedTmpEmployee.fullName}" />
+                    <p:panel header="" >
+                        <h:form enctype="multipart/form-data"> 
+                            <p:fileUpload   uploadLabel="Upload Document" fileUploadListener="#{editEmployeesBean.uploadMaritalStatusDocument_Handler}"   oncomplete="PF('maritalStatusUploadDlg').hide()"
+                                            label="Choose Document" fileLimit="1" fileLimitMessage="Please upload only one document."   sizeLimit="2000000" 
+                                            invalidSizeMessage="File size must be less than 2 MB." allowTypes="/(\.|\/)(gif|jpe?g|png)$/" invalidFileMessage="Invalid file format." >                                 
+                            </p:fileUpload>                
+                        </h:form>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </p:dialog>    
+    </ui:define>
+
+</ui:composition>

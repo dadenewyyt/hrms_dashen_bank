@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../masterTemplate.xhtml">
+            <ui:define name="content">
+                <p:growl id="messages" showDetail="true"  /> 
+                <p:panel id="pnlForRegPageHeading" styleClass="#{structureManPowerBean.pnlForRegPageHeadingRender ? 'show' : 'hide'}">Register Structure Man Power</p:panel>
+                <p:panel id="pnlForAppPageHeading" styleClass="#{structureManPowerBean.pnlForAppPageHeadingRender ? 'show' : 'hide'}">Approve Structure Man Power</p:panel>
+                <h:form id="frmForMaker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForInputFieldsOnMakerSide" styleClass="#{structureManPowerBean.pnlForInputFieldsOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:panelGrid styleClass="inputGrid" columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                            <h:outputText value="Organizational Structure : "/>
+                            <p:selectOneMenu id="drpDnForOrgStrOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{structureManPowerBean.strManPow.organizationalStructure.id}" required="true"  requiredMessage="Please Select Organizational Structure.">
+                                <f:selectItem itemLabel="--Select Organizational Structure--" itemValue=""/>
+                                <f:selectItems value ="#{structureManPowerBean.orgStrSelectItem}" />
+                                
+                            </p:selectOneMenu>
+                            <h:outputText value="Position : "/>
+                            <p:selectOneMenu id="drpDnForPosOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{structureManPowerBean.strManPow.position.ID}" required="true"  requiredMessage="Please Select Position.">
+                                <f:selectItem itemLabel="--Select Position--" itemValue=""/>
+                                <f:selectItems value ="#{structureManPowerBean.posSelectItem}" />
+                            </p:selectOneMenu >
+                            <h:outputText value="Required Number : "/>
+                            <p:inputNumber id="txtForReqNoOnMakerSide" style="width: 280px" required="true"  requiredMessage="Required Number cannot be empty." value="#{structureManPowerBean.strManPow.requiredNoOfWorkForce}"></p:inputNumber>
+                            <h:outputText value="Available Space : "/>
+                            <p:inputNumber id="txtForAvaSpaOnMakerSide" style="width: 280px" required="true"  requiredMessage="Required Number cannot be empty." value="#{structureManPowerBean.strManPow.currentlyAvailableSpace}"></p:inputNumber>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="pnlForUnappOrgStrManPowDataTblOnMakerSide" styleClass="#{structureManPowerBean.pnlForUnappOrgStrManPowDataTblOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:dataTable  id="dtblForUnappOrgStrManPowOnMakerSide" var="unappOrgStrManPowOnMakerSide" value="#{structureManPowerBean.unappOrgStrManPow}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{unappOrgStrManPowOnMakerSide.id}" selection="#{structureManPowerBean.selectedRowInUnappOrgStrManPowDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForAvaSpaOnMakerSide" listener="#{structureManPowerBean.unappOrgStrManPowDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.organizationalStructure.name}" />
+                                <h:outputText value="->" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedOrganizationalStructureArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.unapprovedOrganizationalStructure.name}" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedOrganizationalStructureDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Position" >
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.position.title}" />
+                                <h:outputText value="->" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedPositionArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.unapprovedPosition.title}" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedPositionDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.requiredNoOfWorkForce}" />
+                                <h:outputText value="->" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedRequiredNoOfWorkForceArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.unapprovedRequiredNoOfWorkForce}" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedRequiredNoOfWorkForceDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Available Space" >
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.currentlyAvailableSpace}" />
+                                <h:outputText value="->" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedCurrentlyAvailableSpaceArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappOrgStrManPowOnMakerSide.unapprovedCurrentlyAvailableSpace}" styleClass="#{unappOrgStrManPowOnMakerSide.unapprovedCurrentlyAvailableSpaceDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppOrgStrManPowDataTblOnMakerSide" styleClass="#{structureManPowerBean.pnlForAppOrgStrManPowDataTblOnMakerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:dataTable  id="dtblForAppOrgStrManPowOnMakerSide" var="appOrgStrManPowOnMakerSide" value="#{structureManPowerBean.appOrgStrManPow}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{appOrgStrManPowOnMakerSide.id}" selection="#{structureManPowerBean.selectedRowInappOrgStrManPowDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForAvaSpaOnMakerSide" listener="#{structureManPowerBean.appOrgStrManPowDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{appOrgStrManPowOnMakerSide.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Position" >
+                                <h:outputText value="#{appOrgStrManPowOnMakerSide.position.title}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{appOrgStrManPowOnMakerSide.requiredNoOfWorkForce}" />
+                            </p:column>
+                            <p:column  headerText="Available Space" >
+                                <h:outputText value="#{appOrgStrManPowOnMakerSide.currentlyAvailableSpace}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForBtnsOnMakerSide" styleClass="#{structureManPowerBean.pnlForBtnsOnMakerSideRender ? 'show' : 'hide'}">          
+                        <p:commandButton   id ="btnForResetOrgStrManPowOnMakerSide" value="Reset"  icon="fa fa-fw fa-plus" actionListener="#{structureManPowerBean.btnForResetOrgStrManPowOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForAvaSpaOnMakerSide frmForMaker:dtblForUnappOrgStrManPowOnMakerSide frmForMaker:dtblForAppOrgStrManPowOnMakerSide"> </p:commandButton>
+                        <p:commandButton   id ="btnForSaveOrgStrManPowOnMakerSide" value="Save"  icon="fa fa-fw fa-save" actionListener="#{structureManPowerBean.btnForSaveOrgStrManPowOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForAvaSpaOnMakerSide frmForMaker:dtblForUnappOrgStrManPowOnMakerSide frmForMaker:dtblForAppOrgStrManPowOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForSubmitOrgStrManPowOnMakerSide" value="Submit"  icon="fa fa-fw fa-save" actionListener="#{structureManPowerBean.btnForSubmitOrgStrManPowOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForAvaSpaOnMakerSide frmForMaker:dtblForUnappOrgStrManPowOnMakerSide frmForMaker:dtblForAppOrgStrManPowOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForDeleteOrgStrManPowOnMakerSide" value="Delete"  icon="fa fa-fw fa-remove" actionListener="#{structureManPowerBean.btnForDeleteOrgStrManPowOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForAvaSpaOnMakerSide frmForMaker:dtblForUnappOrgStrManPowOnMakerSide frmForMaker:dtblForAppOrgStrManPowOnMakerSide">
+                            <p:confirm icon="ui-icon-alert" header="Delete Vacancy" message="Are you sure you want to delete the selected Vacancy?"/>
+                        </p:commandButton>
+                    </p:panel>
+                </h:form>
+                <h:form id="frmForChecker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForOrgStrManPowToBeReviewedByCheckerDataTblAndBtns" styleClass="#{structureManPowerBean.pnlForOrgStrManPowToBeReviewedByCheckerDataTblAndBtnsRender ? 'show' : 'hide'}">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Approve" actionListener="#{structureManPowerBean.btnForApproveSelectedOrgStrManPowRowsOnCheckerSideHandler}" update=":messages frmForChecker:dtblForOrgStrManPowToBeReviewedByChecker frmForChecker:dtblForAppOrgStrManPowOnCheckerSide"/>
+                            <p:menuitem value="Make Editable" actionListener="#{structureManPowerBean.btnForMakeSelectedOrgStrManPowRowsEditableOnCheckerSideHandler}" update=":messages frmForChecker:dtblForOrgStrManPowToBeReviewedByChecker frmForChecker:dtblForAppOrgStrManPowOnCheckerSide"/>
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForOrgStrManPowToBeReviewedByChecker" var="orgStrManPowToBeReviewedByChecker" value="#{structureManPowerBean.toBeReviewdOrgStrManPow}" rowIndexVar="rowIndex"  rowKey="#{orgStrManPowToBeReviewedByChecker.id}" selection="#{structureManPowerBean.selectedRowsInOrgStrManPowToBeReviewedByCheckerDataTbl}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.organizationalStructure.name}" />
+                                <h:outputText value="->" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedOrganizationalStructureArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.unapprovedOrganizationalStructure.name}" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedOrganizationalStructureDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Position" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.position.title}" />
+                                <h:outputText value="->" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedPositionArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.unapprovedPosition.title}" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedPositionDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.requiredNoOfWorkForce}" />
+                                <h:outputText value="->" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedRequiredNoOfWorkForceArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.unapprovedRequiredNoOfWorkForce}" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedRequiredNoOfWorkForceDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Available Space" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.currentlyAvailableSpace}" />
+                                <h:outputText value="->" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedCurrentlyAvailableSpaceArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.unapprovedCurrentlyAvailableSpace}" styleClass="#{orgStrManPowToBeReviewedByChecker.unapprovedCurrentlyAvailableSpaceDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.createdBy}" />
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.creationTimeStamp}" />
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.editedBy}" />
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{orgStrManPowToBeReviewedByChecker.editingTimeStamp}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppOrgStrManPowDataTblOnCheckerSide" styleClass="#{structureManPowerBean.pnlForAppOrgStrManPowDataTblOnCheckerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Delete" actionListener="#{structureManPowerBean.btnForDeleteSelectedOrgStrManPowRowsOnCheckerSide}" update=":messages frmForChecker:dtblForOrgStrManPowToBeReviewedByChecker frmForChecker:dtblForAppOrgStrManPowOnCheckerSide" />
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForAppOrgStrManPowOnCheckerSide" var="appOrgStrManPowOnCheckerSide" value="#{structureManPowerBean.appOrgStrManPow}" rowIndexVar="rowIndex"  rowKey="#{appOrgStrManPowOnCheckerSide.id}" selection="#{structureManPowerBean.selectedRowsInAppOrgStrManPowDataTblOnCheckerSide}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Position" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.position.title}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.requiredNoOfWorkForce}" />
+                            </p:column>
+                            <p:column  headerText="Available Space" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.currentlyAvailableSpace}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.createdBy}" />
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.creationTimeStamp}" />
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.editedBy}" />
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{appOrgStrManPowOnCheckerSide.editingTimeStamp}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

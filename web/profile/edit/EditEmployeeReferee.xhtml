@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Referees ">
+                <p:panel header="Referees For #{editEmployeeRefereeBean.employee.fullName}" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedReferee" value="Edit">
+                            <p:ajax event="click" listener="#{editEmployeeRefereeBean.btnEditSelectedReferee_Handler}"  process="@this refereesDataTable"  update=":msgs inputForm:inputPanel btnSaveReferee" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="refereesDataTable" var="varR" value="#{editEmployeeRefereeBean.employeeRefereesList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 emptyMessage="No Referees" rowKey="#{varR.id}" selection="#{editEmployeeRefereeBean.selectedReferee}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Referees
+                        </f:facet>
+                        <p:column style="width:40px">
+                            <p:rowToggler   />
+                        </p:column>
+                        <p:column  headerText="First Name" >
+                            <h:outputText value="#{varR.firstName}" />
+                        </p:column>                   
+                        <p:column  headerText="Middle Name" >
+                            <h:outputText value="#{varR.middleName}" />
+                        </p:column> 
+                        <p:column  headerText="Last Name" >
+                            <h:outputText value="#{varR.lastName}" />
+                        </p:column> 
+                        <p:column  headerText="Salary" >
+                            <h:outputText value="#{varR.salary}" />
+                        </p:column> 
+                        <p:column  headerText="Kebele ID" >
+                            <h:outputText value="#{varR.kebeleId}" />
+                        </p:column> 
+                        <p:column  headerText="Residential Address" >
+                            <h:outputText value="#{varR.residentialAddress}" />
+                        </p:column> 
+                        <p:column  headerText="Name of Employer" >
+                            <h:outputText value="#{varR.employer}" />
+                        </p:column> 
+                        <p:column  headerText="Employer Address" >
+                            <h:outputText value="#{varR.employerAddress}" />
+                        </p:column> 
+                        <p:rowExpansion > 
+
+                            <p:panel>                            
+                                <p:graphicImage   value="#{configuration.REFEREE_DOCUMENTS_PATH}#{varR.fileName}" height="200" width="200"  />     
+                            </p:panel>
+                        </p:rowExpansion>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="First Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="firstInputText" style="width: 280px" required="true"  requiredMessage="First Name cannot be empty." validatorMessage="First Name must be 2-40 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.firstName}" > 
+
+                                <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="firstInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Middle Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="middleNameInputText" style="width: 280px" required="true"  requiredMessage="Middle Name cannot be empty." validatorMessage="Middle Name must be 2-40 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.middleName}" > 
+
+                                <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms2" for="middleNameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Last Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="lastNameInputText" style="width: 280px" required="true"  requiredMessage="Last Name cannot be empty." validatorMessage="Last Name must be 2-40 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.lastName}" > 
+
+                                <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms3" for="lastNameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Salary : "/>
+                        <h:panelGroup>
+                            <p:inputNumber id="salaryInputNumber" disabled="#{editEmployeeRefereeBean.rowSubmitted}" maxValue="10000000.0" size="35"  required="true"  requiredMessage="Salary Cannot be empty." validatorMessage="Salary must be between 0.0 - 10000000.0."
+                                           emptyValue="0.00" value="#{editEmployeeRefereeBean.currentTempRef.salary}">
+                                <f:validateDoubleRange maximum="10000000"   minimum="0.0" />
+                            </p:inputNumber> 
+                            <p:message id="ms4" for="salaryInputNumber" style="color:red" display="text"></p:message>
+                        </h:panelGroup>  
+
+                        <h:outputText value="Kebele ID : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="kebeleIDInputText" style="width: 280px" required="true"  requiredMessage="Kebele ID cannot be empty." validatorMessage="Kebele ID must be 2-40 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.kebeleId}" > 
+
+                                <f:validateLength maximum="40" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms5" for="kebeleIDInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Residential Address : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="residentialAddressInputText" style="width: 280px" required="true"  requiredMessage="Residential Address cannot be empty." validatorMessage="Residential Address must be 2-60 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.residentialAddress}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms6" for="residentialAddressInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Employer : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="employerInputText" style="width: 280px" required="true"  requiredMessage="Employer cannot be empty." validatorMessage="Employer must be 2-60 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.employer}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms7" for="employerInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Employer Address : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeRefereeBean.rowSubmitted}"   id="employerAddressInputText" style="width: 280px" required="true"  requiredMessage="Employer Address cannot be empty." validatorMessage="Employer Address must be 2-60 characters in length."
+                                         value="#{editEmployeeRefereeBean.currentTempRef.employerAddress}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms8" for="employerAddressInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton   id ="btnNewReferee" value="New"  icon="fa fa-fw fa-plus"> 
+                        <p:ajax event="click" listener="#{editEmployeeRefereeBean.btnNewReferee_Handler}" update=":msgs inputForm:inputPanel btnSaveReferee"></p:ajax>
+                    </p:commandButton>
+                    <p:commandButton   id ="btnSaveReferee" value="Save" disabled="#{editEmployeeRefereeBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{editEmployeeRefereeBean.btnSaveReferee_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpRefereesDataTable">
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">  
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" > 
+                        <p:ajax event="click" listener="#{editEmployeeRefereeBean.btnRefreshList_Handler}" update=":msgs  inputForm:inputPanel inputForm:actionsPanel tmpRefereesDataTable "/>
+                    </p:commandButton> 
+                    <p:commandButton disabled="#{editEmployeeRefereeBean.rowSubmitted}" value="Change / Upload Document" type="button" onclick="PF('documentUploadDlg').show()" />
+                    <p:commandButton disabled="#{editEmployeeRefereeBean.rowSubmitted}" id="btnRemoveUploadedDocument" value="Remove Uploaded Document" >
+                        <p:ajax event="click" listener="#{editEmployeeRefereeBean.btnRemoveUploadedPhoto_Handler}" update=":msgs tmpRefereesDataTable"/>
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{editEmployeeRefereeBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{editEmployeeRefereeBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpRefereesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{editEmployeeRefereeBean.rowSubmitted}" value="Delete Row" actionListener="#{editEmployeeRefereeBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpRefereesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable  id="tmpRefereesDataTable" var="tmpR" value="#{editEmployeeRefereeBean.tempEmployeeRefereesList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              emptyMessage="No Referees" rowKey="#{tmpR.id}" selection="#{editEmployeeRefereeBean.selectedTempReferee}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Referees For Employee
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpRefereesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel documentUploadDlg" listener="#{editEmployeeRefereeBean.tmpRefereesDataTableDataTable_rowSelected}" />                             
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="First Name" >
+                        <h:outputText value="#{tmpR.firstName}" />
+                    </p:column>                   
+                    <p:column  headerText="Middle Name" >
+                        <h:outputText value="#{tmpR.middleName}" />
+                    </p:column> 
+                    <p:column  headerText="Last Name" >
+                        <h:outputText value="#{tmpR.lastName}" />
+                    </p:column> 
+                    <p:column  headerText="Salary" >
+                        <h:outputText value="#{tmpR.salary}" />
+                    </p:column> 
+                    <p:column  headerText="Kebele ID" >
+                        <h:outputText value="#{tmpR.kebeleId}" />
+                    </p:column> 
+                    <p:column  headerText="Residential Address" >
+                        <h:outputText value="#{tmpR.residentialAddress}" />
+                    </p:column> 
+                    <p:column  headerText="Name of Employer" >
+                        <h:outputText value="#{tmpR.employer}" />
+                    </p:column> 
+                    <p:column  headerText="Employer Address" >
+                        <h:outputText value="#{tmpR.employerAddress}" />
+                    </p:column> 
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpR.tmpStatus}" />
+                    </p:column> 
+                    <p:rowExpansion > 
+
+                        <p:panel>                            
+                            <p:graphicImage   value="#{configuration.REFEREE_DOCUMENTS_PATH}#{tmpR.tmpDocumentFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+        <p:dialog id="documentUploadDlg" header="Upload Document" modal="true" widgetVar="documentUploadDlg" appendTo="@(body)">
+            <h:form>
+                <p:panel>
+                    <h:outputText value="Change Document for #{editEmployeeRefereeBean.currentTempRef.fullName}" />
+                    <p:panel header="Change Document" >
+                        <h:form enctype="multipart/form-data"> 
+                            <p:fileUpload   uploadLabel="Upload Document" fileUploadListener="#{editEmployeeRefereeBean.upload}"   oncomplete="PF('documentUploadDlg').hide()"
+                                            label="Choose Document" fileLimit="1" fileLimitMessage="Please upload only one document."   sizeLimit="2000000" 
+                                            invalidSizeMessage="File size must be less than 2 MB." allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/" invalidFileMessage="Invalid file format." >                                 
+                            </p:fileUpload>                
+                        </h:form>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

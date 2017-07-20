@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <p:panel>          
+            Salary Scale List
+        </p:panel>
+        <p:button id="btnNewSalaryScale" value="Add New" icon="fa fa-plus" outcome="EditSalaryScales"></p:button>
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel>
+                <p:dataTable  id="salaryScalesDataTable" var="salaryScale" value="#{salaryScaleBean.salaryScalesList}" 
+                              rowIndexVar="rowIndex"  rowKey="#{salaryScale.ID}" tableStyle="table-layout: auto;">
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    
+                    <p:column headerText="Grade" >
+                        <h:outputText value="#{salaryScale.grade.grade}" />
+                    </p:column>
+                    
+                    <p:column headerText="Level" >
+                        <h:outputText value="#{salaryScale.level.level}" />
+                    </p:column>
+                    
+                    <p:column headerText="Step Increment" >
+                        <h:outputText value="#{salaryScale.stepIncrement}">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Salary After Step Increment" >
+                        <h:outputText value="#{salaryScale.getSalaryAfterStepIncrement()}">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>   
+            </p:panel> 
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

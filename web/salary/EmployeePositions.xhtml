@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <p:panel>          
+            Employee Position List
+        </p:panel>
+        <p:button id="btnNewEmployeePosition" value="Add New" icon="fa fa-plus" outcome="EditEmployeePositions"></p:button>
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel>
+                <p:dataTable  id="employeePositionsDataTable" var="employeePosition" value="#{employeePositionBean.employeePositionsList}" 
+                              rowIndexVar="rowIndex"  rowKey="#{employeePosition.ID}" tableStyle="table-layout: auto;">
+                    <p:column headerText=" " style="width:50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width:50px" />
+                    </p:column>
+                    <p:column  headerText="Employee" >
+                        <h:outputText value="#{employeePosition.employee.getFullName()}" />
+                    </p:column>
+                    <p:column headerText="Position">
+                        <h:outputText value="#{employeePosition.position.title}"/>
+                    </p:column>
+                    <p:column headerText="Organizational Structure">
+                        <h:outputText value="#{employeePositionBean.isEmpPositionHasOrgStruct(employeePosition) eq true ? employeePositionBean.getEmpPositionOrgStructByID(employeePosition.getID()).getOrganizationalStructure().getName() : '-'}"/>
+                    </p:column>
+                    <p:column headerText="Grade">
+                        <h:outputText value="#{employeePositionBean.isEmpPosHasSalaryScale(employeePosition) eq true ? employeePositionBean.getEmpPosSalaryScaleByID(employeePosition.getID()).getSalaryScale().getGrade().getGrade() : '-'}"/>
+                    </p:column>
+                    <p:column headerText="Level">
+                        <h:outputText value="#{employeePositionBean.isEmpPosHasSalaryScale(employeePosition) eq true ? employeePositionBean.getEmpPosSalaryScaleByID(employeePosition.getID()).getSalaryScale().getLevel().getLevel() : '-'}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel> 
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

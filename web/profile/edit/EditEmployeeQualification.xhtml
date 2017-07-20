@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Qualifications ">   
+                <p:panel header="Qualifications For #{editEmployeeQualificationBean.employee.fullName}" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedQualification" value="Edit">
+                            <p:ajax event="click" listener="#{editEmployeeQualificationBean.btnEditSelectedQualification_Handler}"  process="@this qualificationsDataTable"  update=":msgs inputForm:inputPanel btnSaveQualification" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="qualificationsDataTable" var="varQ" value="#{editEmployeeQualificationBean.employeeQualificationsList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 emptyMessage="No Qualifications" rowKey="#{varQ.id}" selection="#{editEmployeeQualificationBean.selectedQualification}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Qualifications
+                        </f:facet>
+                        <p:column style="width:40px">
+                            <p:rowToggler   />
+                        </p:column>
+                        <p:column  headerText="Qualification" >
+                            <h:outputText value="#{varQ.qualification}" />
+                        </p:column>                   
+                        <p:column  headerText="Qualification Level" >
+                            <h:outputText value="#{varQ.qualificationLevel}" />
+                        </p:column> 
+                        <p:column  headerText="CGPA" >
+                            <h:outputText value="#{varQ.CGPA}" />
+                        </p:column> 
+                        <p:column  headerText="Institution" >
+                            <h:outputText value="#{varQ.institution.name}" />
+                        </p:column> 
+                        <p:column  headerText="Start Date" >
+                            <h:outputText value="#{varQ.startDate}" />
+                        </p:column> 
+                        <p:column  headerText="Date Of Graduation" >
+                            <h:outputText value="#{varQ.dateOfGraduation}" />
+                        </p:column> 
+                        <p:rowExpansion > 
+
+                            <p:panel>                            
+                                <p:graphicImage   value="#{configuration.QUALIFICATION_DOCUMENTS_PATH}#{varQ.fileName}" height="200" width="200"  />     
+                            </p:panel>
+                        </p:rowExpansion>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Qualification : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeQualificationBean.rowSubmitted}"   id="qualificationInputText" style="width: 280px" required="true"  requiredMessage="Qualification cannot be empty." validatorMessage="Qualification must be 2-60 characters in length."
+                                         value="#{editEmployeeQualificationBean.currentTempQual.qualification}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="qualificationInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Qualification Level : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeQualificationBean.rowSubmitted}"   id="qualificationLevelInputText" style="width: 280px" required="true"  requiredMessage="Qualification level cannot be empty." validatorMessage="Qualification level must be 2-60 characters in length."
+                                         value="#{editEmployeeQualificationBean.currentTempQual.qualificationLevel}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms2" for="qualificationLevelInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="CGPA : "/>
+                        <h:panelGroup>
+                            <p:inputNumber id="CGPAInputNumber" disabled="#{editEmployeeQualificationBean.rowSubmitted}" maxValue="10.0" size="35"  required="true"  requiredMessage="CGPA Cannot be empty." validatorMessage="CGPA must be between 0.0 - 10.0."
+                                           emptyValue="0.00" value="#{editEmployeeQualificationBean.currentTempQual.CGPA}">
+                                <f:validateDoubleRange maximum="10.0"   minimum="0.0" />
+                            </p:inputNumber> 
+                            <p:message id="ms3" for="CGPAInputNumber" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Institution : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{editEmployeeQualificationBean.rowSubmitted}" id="instSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Institution must be selected."
+                                             value="#{editEmployeeQualificationBean.currentTempQual.institutionID}" >
+                                <f:selectItem itemLabel="--Select Instituion--" itemValue=""/>
+                                <f:selectItems value ="#{editEmployeeQualificationBean.institutionsList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms4" for="instSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Start Date : "/>                   
+                        <p:calendar disabled="#{editEmployeeQualificationBean.rowSubmitted}" readonlyInput="true" id="startDateCalendar" pattern="dd-MMM-yyyy" size="35"  required="true" 
+                                    value="#{editEmployeeQualificationBean.currentTempQual.startDate}" >    
+                        </p:calendar>
+                        <h:outputText value="Date of Graduation : "/>                   
+                        <p:calendar disabled="#{editEmployeeQualificationBean.rowSubmitted}" readonlyInput="true" id="dateOfGraduationCalendar" pattern="dd-MMM-yyyy" size="35"  required="true" 
+                                    value="#{editEmployeeQualificationBean.currentTempQual.dateOfGraduation}" >    
+                        </p:calendar>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton   id ="btnNewQualification" value="New"  icon="fa fa-fw fa-plus"> 
+                        <p:ajax event="click" listener="#{editEmployeeQualificationBean.btnNewQualification_Handler}" update=":msgs inputForm:inputPanel btnSaveQualification"></p:ajax>
+                    </p:commandButton>
+                    <p:commandButton   id ="btnSaveQualification" value="Save" disabled="#{editEmployeeQualificationBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{editEmployeeQualificationBean.btnSaveQualification_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpQualificationsDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">  
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" > 
+                        <p:ajax event="click" listener="#{editEmployeeQualificationBean.btnRefreshList_Handler}" update=":msgs  inputForm:inputPanel inputForm:actionsPanel tmpQualificationsDataTable "/>
+                    </p:commandButton> 
+                    <p:commandButton disabled="#{editEmployeeQualificationBean.rowSubmitted}" value="Change / Upload Document" type="button" onclick="PF('documentUploadDlg').show()" />
+                    <p:commandButton disabled="#{editEmployeeQualificationBean.rowSubmitted}" id="btnRemoveUploadedDocument" value="Remove Uploaded Document" >
+                        <p:ajax event="click" listener="#{editEmployeeQualificationBean.btnRemoveUploadedPhoto_Handler}" update=":msgs tmpQualificationsDataTable"/>
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{editEmployeeQualificationBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{editEmployeeQualificationBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpQualificationsDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{editEmployeeQualificationBean.rowSubmitted}" value="Delete Row" actionListener="#{editEmployeeQualificationBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpQualificationsDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable  id="tmpQualificationsDataTable" var="tmpQ" value="#{editEmployeeQualificationBean.tempEmployeeQualificationsList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              emptyMessage="No Qualifications" rowKey="#{tmpQ.id}" selection="#{editEmployeeQualificationBean.selectedTempQualification}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Qualifications For Employee
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpQualificationsDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel documentUploadDlg" listener="#{editEmployeeQualificationBean.tmpQualificationsDataTableDataTable_rowSelected}" />                             
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="Qualification" >
+                        <h:outputText value="#{tmpQ.qualification}" />
+                    </p:column>                   
+                    <p:column  headerText="Qualification Level" >
+                        <h:outputText value="#{tmpQ.qualificationLevel}" />
+                    </p:column> 
+                    <p:column  headerText="CGPA" >
+                        <h:outputText value="#{tmpQ.CGPA}" />
+                    </p:column> 
+                    <p:column  headerText="Institution" >
+                        <h:outputText value="#{tmpQ.institution.name}" />
+                    </p:column> 
+                    <p:column  headerText="Start Date" >
+                        <h:outputText value="#{tmpQ.startDate}" />
+                    </p:column> 
+                    <p:column  headerText="Date Of Graduation" >
+                        <h:outputText value="#{tmpQ.dateOfGraduation}" />
+                    </p:column> 
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpQ.tmpStatus}" />
+                    </p:column> 
+                    <p:rowExpansion > 
+
+                        <p:panel rendered="#{tmpQ.tmpDocumentUploaded}">                            
+                            <p:graphicImage   value="#{configuration.QUALIFICATION_DOCUMENTS_PATH}#{tmpQ.tmpDocumentFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+        <p:dialog id="documentUploadDlg" header="Upload Document" modal="true" widgetVar="documentUploadDlg" appendTo="@(body)">
+            <h:form>
+                <p:panel>
+                    <h:outputText value="Change Document for #{editEmployeeQualificationBean.currentTempQual.qualification}" />
+                    <p:panel header="Change Document" >
+                        <h:form enctype="multipart/form-data"> 
+                            <p:fileUpload   uploadLabel="Upload Document" fileUploadListener="#{editEmployeeQualificationBean.upload}"   oncomplete="PF('documentUploadDlg').hide()"
+                                            label="Choose Document" fileLimit="1" fileLimitMessage="Please upload only one document."   sizeLimit="2000000" 
+                                            invalidSizeMessage="File size must be less than 2 MB." allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/" invalidFileMessage="Invalid file format." >                                 
+                            </p:fileUpload>                
+                        </h:form>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

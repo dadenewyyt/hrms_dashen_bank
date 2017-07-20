@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="City">
+                <p:panel header="Cities" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedCity" value="Edit">
+                            <p:ajax event="click" listener="#{cityBean.btnEditSelectedCity_Handler}"  process="@this citiesDataTable"  update=":msgs inputForm:inputPanel btnSaveCity" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="citiesDataTable" var="city" value="#{cityBean.citiesList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 rowKey="#{city.ID}" selection="#{cityBean.selectedCity}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Cities
+                        </f:facet>
+                        <p:column headerText=" " style="width: 50px">
+                            <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                        </p:column>
+                        <p:column  headerText="Name" >
+                            <h:outputText value="#{city.name}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{cityBean.rowSubmitted}"   id="nameInputText" style="width: 280px" required="true"  requiredMessage="Name cannot be empty." value="#{cityBean.currentTempCity.name}" >
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="nameInputText" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton id ="btnNewCity" value="New" icon="fa fa-fw fa-plus" actionListener="#{cityBean.btnNewCity_Handler}" update=":msgs inputForm:inputPanel btnSaveCity"> 
+
+                    </p:commandButton>
+                    <p:commandButton id ="btnSaveCity" value="Save" disabled="#{cityBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{cityBean.btnSaveCity_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpCitiesDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{cityBean.btnRefreshList_Handler}" process="@this" update=":msgs tmpCitiesDataTable "> 
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{cityBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{cityBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpCitiesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{cityBean.rowSubmitted}" value="Delete Row" actionListener="#{cityBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpCitiesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable id="tmpCitiesDataTable" var="tmpCity" value="#{cityBean.tempCitiesList}" selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{tmpCity.ID}" selection="#{cityBean.selectedTempCity}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Cities
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpCitiesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel" listener="#{cityBean.tmpCitiesDataTableDataTable_rowSelected}" />
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px" />
+                    </p:column>
+                    <p:column  headerText="Name" >
+                        <h:outputText value="#{tmpCity.name}" />
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpCity.tmpStatus}" />
+                    </p:column> 
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

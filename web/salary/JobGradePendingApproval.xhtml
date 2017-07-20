@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="JobGrades Pending Approval">
+                <p:menuButton value="JobGrade">
+                    <p:menuitem value="Approve" actionListener="#{jobGradesPendingApprovalBean.approveSelectedRows}" update="pendingJobGradesDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{jobGradesPendingApprovalBean.makeEditableByMaker()}" update="pendingJobGradesDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingJobGradesDataTable" var="tmpJobGrade" value="#{jobGradesPendingApprovalBean.pendingTmpJobGrades}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              rowKey="#{tmpJobGrade.ID}" selection="#{jobGradesPendingApprovalBean.selectedJobGradeTmps}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending JobGrades
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingJobGradesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    <p:column  headerText="Grade" >
+                        <h:outputText value="#{tmpJobGrade.grade}" />
+                    </p:column>
+                    <p:column  headerText="Description" >
+                        <h:outputText value="#{tmpJobGrade.description}" />
+                    </p:column>
+                    <p:column  headerText="Base Salary" >
+                        <h:outputText value="#{tmpJobGrade.baseSalary}">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column   headerText="Temp Status" >
+                        <h:outputText value="#{tmpJobGrade.tmpStatus}" />                  
+
+                    </p:column>
+                    <p:column   headerText="Maker" >
+                        <h:outputText value="#{tmpJobGrade.createdBy}" />                  
+
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

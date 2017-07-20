@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+      <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+    
+        <p:panel>   
+            <h:form>
+            <p:outputPanel deferred="true">
+                <h3>Calculated Leave Utilization Report </h3>
+                <p>HRMS System</p>
+            </p:outputPanel>
+        </h:form>
+        </p:panel>
+         
+      <h:form id="reportForm">
+           <p:panel> 
+             
+                <p:commandButton id ="btnSaveNewRequest" value="Generate Report Now!"  
+                                   icon="fa fa-fw fa-save" 
+                                   actionListener="#{leaveUtilizationBean.btn_generate}" update=":reportForm reportDatatable "> 
+                 </p:commandButton>
+            </p:panel>
+          <p:dataTable id="reportDatatable" var="report" value="#{leaveUtilizationBean.reports}" rows="100"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+              
+        <p:column headerText="Full Name">
+            <h:outputText value="#{report.full_name}" />
+        </p:column>
+                
+        <p:column headerText="EMP_ID">
+            <h:outputText value="#{report.emp_id}" />
+        </p:column>
+                
+        <p:column headerText="Perm.Date">
+            <h:outputText value="#{report.date_permanent}" />
+        </p:column>
+ 
+                    
+        <p:column headerText="Accrud">
+            <h:outputText value="#{report.accrud_leave}" />
+        </p:column>
+              
+         <p:column headerText="Utilized">
+             <h:outputText value="#{report.utilized}" />
+        </p:column>
+              
+         <p:column headerText="Total Avialble Days">
+            <h:outputText value="#{report.days_avil}" />
+        </p:column>
+              
+       <p:column headerText="Quarerlty Availabl">
+           <h:outputText value="#{report.avialble}" />
+        </p:column>    
+              
+        <p:column headerText="Total-Years">
+            <h:outputText value="#{report.total_years}" />
+        </p:column>    
+               
+ 
+                  
+        <p:column headerText="Cash-W">
+            <h:outputText value="0.0 Birr" />
+        </p:column>
+         <p:column headerText="Cash-NW">
+             <h:outputText value="0.0 Birr" />
+        </p:column>                
+         <p:column headerText="Expirese?">
+            <h:outputText value="No" />
+        </p:column>
+    </p:dataTable>
+</h:form>
+    </ui:define>
+
+</ui:composition>

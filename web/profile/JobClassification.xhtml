@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" globalOnly="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+        <p:panel header="Job Classification" >
+            <p:outputPanel>
+                <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn," columns="2" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                    <h:outputText value="Description : "/>
+                    <h:panelGroup>
+                        <p:inputText    id="descriptionInputText" style="width: 280px" required="true"  requiredMessage="Description cannot be empty." validatorMessage="Description must be 2-20 characters in length."
+                                        value="#{jobClassificationBean.newJobClassification.description}" > 
+
+                            <f:validateLength maximum="20" minimum="2"   ></f:validateLength>
+                        </p:inputText><br/>
+                        <p:message id="ms1" for="descriptionInputText" style="color:red" display="text"></p:message>
+                    </h:panelGroup>
+                </p:panelGrid>
+            </p:outputPanel>
+
+        </p:panel>
+        <p:panel>          
+            <p:commandButton   id ="btnSaveNewJobClassification" value="Save"  icon="fa fa-fw fa-save" actionListener="#{jobClassificationBean.btnSaveNewJobClassification_Handler()}" update=":msgs ms1"> 
+
+            </p:commandButton>   
+        </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

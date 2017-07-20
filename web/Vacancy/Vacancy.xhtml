@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../masterTemplate.xhtml">
+            <ui:define name="content">
+                <p:growl id="messages" showDetail="true"  /> 
+                <p:panel id="pnlForRegPageHeading" styleClass="#{vacancyBean.pnlForRegPageHeadingRender ? 'show' : 'hide'}">Register Internal/External Vacancy</p:panel>
+                <p:panel id="pnlForAppPageHeading" styleClass="#{vacancyBean.pnlForAppPageHeadingRender ? 'show' : 'hide'}">Approve Internal/External Vacancy</p:panel>
+                <h:form id="frmForMaker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForInputFieldsOnMakerSide" styleClass="#{vacancyBean.pnlForInputFieldsOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:panelGrid styleClass="inputGrid" columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                            <h:outputText value="Organizational Structure : "/>
+                            <p:selectOneMenu id="drpDnForOrgStrOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{vacancyBean.vac.organizationalStructure.id}" required="true"  requiredMessage="Please Select Organizational Structure.">
+                                <f:selectItem itemLabel="--Select Organizational Structure--" itemValue=""/>
+                                <f:selectItems value ="#{vacancyBean.orgStrSelectItem}" />
+                                
+                            </p:selectOneMenu >
+                            <h:outputText value="Vacant Position : "/>
+                            <p:selectOneMenu id="drpDnForPosOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{vacancyBean.vac.position.ID}" required="true"  requiredMessage="Please Select Position.">
+                                <f:selectItem itemLabel="--Select Position--" itemValue=""/>
+                                <f:selectItems value ="#{vacancyBean.posSelectItem}" />                               
+                            </p:selectOneMenu >
+                            <h:outputText value="Vacancy Number : "/>
+                            <p:inputText id="txtForVacNoOnMakerSide" style="width: 280px" required="true"  requiredMessage="Vacancy Number cannot be empty." value="#{vacancyBean.vac.vacancyNumber}" ></p:inputText>
+                            <h:outputText value="Required Qualification : "/>
+                            <p:inputText id="txtForReqQuaOnMakerSide" style="width: 280px" required="true"  requiredMessage="Required qualification cannot be empty." value="#{vacancyBean.vac.qualification}" ></p:inputText>
+                            <h:outputText value="Required Training Or Skill : "/>
+                            <p:inputText id="txtForReqTraSklOnMakerSide" style="width: 280px" required="true"  requiredMessage="Required Trainig or skill cannot be empty." value="#{vacancyBean.vac.trainingOrSkill}" ></p:inputText>
+                            <h:outputText value="Required Experience : "/>
+                            <p:inputText id="txtForReqExpOnMakerSide" style="width: 280px" required="true"  requiredMessage="Required Experience cannot be empty." value="#{vacancyBean.vac.experience}" ></p:inputText>
+                            <h:outputText value="Eligibility : "/>
+                            <p:inputText id="txtForEliOnMakerSide" style="width: 280px" required="false" value="#{vacancyBean.vac.eligibility}" ></p:inputText>
+                            <h:outputText value="Vacancy Opening Date : "/>
+                            <p:calendar id= "calForVacOpnDteOnMakerSide" pattern="dd-MMM-yyyy"  value="#{vacancyBean.vac.openFromInDate}" showOn="button" readonlyInput="true"></p:calendar>
+                            <h:outputText value="Vacancy Closing Date : "/>
+                            <p:calendar id= "calForVacClsDteOnMakerSide" pattern="dd-MMM-yyyy"  value="#{vacancyBean.vac.openToInDate}" showOn="button" readonlyInput="true"></p:calendar>
+                            <h:outputText value="Required Number : "/>
+                            <p:inputNumber id="txtForReqNoOnMakerSide" style="width: 280px" required="true"  requiredMessage="Required Number cannot be empty." value="#{vacancyBean.vac.requiredNo}" ></p:inputNumber>
+                            <h:outputText value="Remark : "/>
+                            <p:inputText id="txtForRemOnMakerSide" style="width: 280px" required="false" value="#{vacancyBean.vac.remark}" ></p:inputText>                           
+                            <h:outputText value="Vacancy Type : "/>
+                            <p:selectOneMenu id="drpDnForVacTypOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{vacancyBean.vac.vacancyType}" required="true"  requiredMessage="Please Select Vacancy Type.">
+                                <f:selectItem itemLabel="--Select Vacancy Type--" itemValue=""/>
+                                <f:selectItem itemLabel="Internal" itemValue="Internal"/>
+                                <f:selectItem itemLabel="External" itemValue="External"/>                             
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="pnlForPopVacsDataTblOnMakerSide" styleClass="#{vacancyBean.pnlForPopVacsDataTblOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:dataTable id="dtblForPopVacsOnMakerSide" var="popVacsOnMakerSide" value="#{vacancyBean.popVacs}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top" rowKey="#{popVacsOnMakerSide.id}" selection="#{vacancyBean.selectedRowInPopVacsDataTblOnMakerSide}" scrollable="true" scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide" listener="#{vacancyBean.popVacsDataTblOnMakerSideRowSelectedListener}" />
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{popVacsOnMakerSide.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Vacant Position" >
+                                <h:outputText value="#{popVacsOnMakerSide.position.title}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{popVacsOnMakerSide.requiredNo}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForPopVacsBtnOnMakerSide" styleClass="#{vacancyBean.pnlForPopVacsBtnOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:commandButton   id ="btnForPopVacsOnMakerSide" value="Populate Vacancies"  icon="fa fa-fw fa-save">
+                            <p:ajax event="click" update="frmForMaker:dtblForPopVacsOnMakerSide" listener="#{vacancyBean.popVacsBtnOnMakeSideClickListener}"/>
+                        </p:commandButton>
+                    </p:panel>
+                    <p:panel id="pnlForUnappVacsDataTblOnMakerSide" styleClass="#{vacancyBean.pnlForUnappVacsDataTblOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:dataTable  id="dtblForUnappVacsOnMakerSide" var="unappVacsOnMakerSide" value="#{vacancyBean.unappVacs}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{unappVacsOnMakerSide.id}" selection="#{vacancyBean.selectedRowInUnappVacsDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide" listener="#{vacancyBean.unappVacsDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{unappVacsOnMakerSide.organizationalStructure.name}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedOrganizationalStructureArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedOrganizationalStructure.name}" styleClass="#{unappVacsOnMakerSide.unapprovedOrganizationalStructureDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacant Position" >
+                                <h:outputText value="#{unappVacsOnMakerSide.position.title}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedPositionArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedPosition.title}" styleClass="#{unappVacsOnMakerSide.unapprovedPositionDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{unappVacsOnMakerSide.vacancyNumber}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedVacancyNumberArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedVacancyNumber}" styleClass="#{unappVacsOnMakerSide.unapprovedVacancyNumberDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Qualification" >
+                                <h:outputText value="#{unappVacsOnMakerSide.qualification}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedQualificationArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedQualification}" styleClass="#{unappVacsOnMakerSide.unapprovedQualificationDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Training Or Skill" >
+                                <h:outputText value="#{unappVacsOnMakerSide.trainingOrSkill}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedTrainingOrSkillArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedTrainingOrSkill}" styleClass="#{unappVacsOnMakerSide.unapprovedTrainingOrSkillDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Experience" >
+                                <h:outputText value="#{unappVacsOnMakerSide.experience}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedExperienceArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedExperience}" styleClass="#{unappVacsOnMakerSide.unapprovedExperienceDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Eligibility" >
+                                <h:outputText value="#{unappVacsOnMakerSide.eligibility}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedEligibilityArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedEligibility}" styleClass="#{unappVacsOnMakerSide.unapproveEligibilityDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Opening Date" >
+                                <h:outputText value="#{unappVacsOnMakerSide.openFrom}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedOpenFromArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedOpenFrom}" styleClass="#{unappVacsOnMakerSideunapprovedOpenFromDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Closing Date" >
+                                <h:outputText value="#{unappVacsOnMakerSide.openTo}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedOpenToArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedOpenTo}" styleClass="#{unappVacsOnMakerSide.unapprovedOpenToDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{unappVacsOnMakerSide.requiredNo}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedRequiredNoArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedRequiredNo}" styleClass="#{unappVacsOnMakerSide.unapprovedRequiredNoDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Remark" >
+                                <h:outputText value="#{unappVacsOnMakerSide.remark}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedRemarkArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedRemark}" styleClass="#{unappVacsOnMakerSide.unapproveRemarkDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Type" >
+                                <h:outputText value="#{unappVacsOnMakerSide.vacancyType}" />
+                                <h:outputText value="->" styleClass="#{unappVacsOnMakerSide.unapprovedVacancyTypeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappVacsOnMakerSide.unapprovedVacancyType}" styleClass="#{unappVacsOnMakerSide.unapproveVacancyTypeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppVacsDataTblOnMakerSide" styleClass="#{vacancyBean.pnlForAppVacsDataTblOnMakerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:dataTable  id="dtblForAppVacsOnMakerSide" var="appVacsOnMakerSide" value="#{vacancyBean.appVacs}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{appVacsOnMakerSide.id}" selection="#{vacancyBean.selectedRowInappVacsDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide" listener="#{vacancyBean.appVacsDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{appVacsOnMakerSide.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Vacant Position" >
+                                <h:outputText value="#{appVacsOnMakerSide.position.title}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{appVacsOnMakerSide.vacancyNumber}" />
+                            </p:column>
+                            <p:column  headerText="Required Qualification" >
+                                <h:outputText value="#{appVacsOnMakerSide.qualification}" />
+                            </p:column>
+                            <p:column  headerText="Required Training Or Skill" >
+                                <h:outputText value="#{appVacsOnMakerSide.trainingOrSkill}" />
+                            </p:column>
+                            <p:column  headerText="Required Experience" >
+                                <h:outputText value="#{appVacsOnMakerSide.experience}" />
+                            </p:column>
+                            <p:column  headerText="Eligibility" >
+                                <h:outputText value="#{appVacsOnMakerSide.eligibility}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Opening Date" >
+                                <h:outputText value="#{appVacsOnMakerSide.openFrom}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Closing Date" >
+                                <h:outputText value="#{appVacsOnMakerSide.openTo}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{appVacsOnMakerSide.requiredNo}" />
+                            </p:column>
+                            <p:column  headerText="Remark" >
+                                <h:outputText value="#{appVacsOnMakerSide.remark}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Type" >
+                                <h:outputText value="#{appVacsOnMakerSide.vacancyType}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForBtnsOnMakerSide" styleClass="#{vacancyBean.pnlForBtnsOnMakerSideRender ? 'show' : 'hide'}">          
+                        <p:commandButton   id ="btnForResetVacOnMakerSide" value="Reset"  icon="fa fa-fw fa-plus" actionListener="#{vacancyBean.btnForResetVacOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide frmForMaker:dtblForUnappVacsOnMakerSide frmForMaker:dtblForAppVacsOnMakerSide"> </p:commandButton>
+                        <p:commandButton   id ="btnForSaveVacOnMakerSide" value="Save"  icon="fa fa-fw fa-save" actionListener="#{vacancyBean.btnForSaveVacOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide frmForMaker:dtblForUnappVacsOnMakerSide frmForMaker:dtblForAppVacsOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForSubmitVacOnMakerSide" value="Submit"  icon="fa fa-fw fa-save" actionListener="#{vacancyBean.btnForSubmitVacOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide frmForMaker:dtblForUnappVacsOnMakerSide frmForMaker:dtblForAppVacsOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForDeleteVacOnMakerSide" value="Delete"  icon="fa fa-fw fa-remove" actionListener="#{vacancyBean.btnForDeleteVacOnMakerSideHandler}" update=":messages frmForMaker:drpDnForOrgStrOnMakerSide frmForMaker:drpDnForPosOnMakerSide frmForMaker:txtForVacNoOnMakerSide frmForMaker:txtForReqQuaOnMakerSide frmForMaker:txtForReqTraSklOnMakerSide frmForMaker:txtForReqExpOnMakerSide frmForMaker:txtForEliOnMakerSide frmForMaker:calForVacOpnDteOnMakerSide frmForMaker:calForVacClsDteOnMakerSide frmForMaker:txtForReqNoOnMakerSide frmForMaker:txtForRemOnMakerSide frmForMaker:drpDnForVacTypOnMakerSide frmForMaker:dtblForUnappVacsOnMakerSide frmForMaker:dtblForAppVacsOnMakerSide">
+                            <p:confirm icon="ui-icon-alert" header="Delete Vacancy" message="Are you sure you want to delete the selected Vacancy?"/>
+                        </p:commandButton>
+                    </p:panel>
+                </h:form>
+                <h:form id="frmForChecker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForVacsToBeReviewedByCheckerDataTblAndBtns" styleClass="#{vacancyBean.pnlForVacsToBeReviewedByCheckerDataTblAndBtnsRender ? 'show' : 'hide'}">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Approve" actionListener="#{vacancyBean.btnForApproveSelectedVacRowsOnCheckerSideHandler}" update=":messages frmForChecker:dtblForVacsToBeReviewedByChecker frmForChecker:dtblForAppVacsOnCheckerSide"/>
+                            <p:menuitem value="Make Editable" actionListener="#{vacancyBean.btnForMakeSelectedVacRowsEditableOnCheckerSideHandler}" update=":messages frmForChecker:dtblForVacsToBeReviewedByChecker frmForChecker:dtblForAppVacsOnCheckerSide"/>
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForVacsToBeReviewedByChecker" var="vacsToBeReviewedByChecker" value="#{vacancyBean.toBeReviewdvacs}" rowIndexVar="rowIndex"  rowKey="#{vacsToBeReviewedByChecker.id}" selection="#{vacancyBean.selectedRowsInVacsToBeReviewedByCheckerDataTbl}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.organizationalStructure.name}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedOrganizationalStructureArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedOrganizationalStructure.name}" styleClass="#{vacsToBeReviewedByChecker.unapprovedOrganizationalStructureDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacant Position" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.position.title}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedPositionArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedPosition.title}" styleClass="#{vacsToBeReviewedByChecker.unapprovedPositionDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.vacancyNumber}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedVacancyNumberArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedVacancyNumber}" styleClass="#{vacsToBeReviewedByChecker.unapprovedVacancyNumberDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Qualification" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.qualification}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedQualificationArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedQualification}" styleClass="#{vacsToBeReviewedByChecker.unapprovedQualificationDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Training Or Skill" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.trainingOrSkill}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedTrainingOrSkillArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedTrainingOrSkill}" styleClass="#{vacsToBeReviewedByChecker.unapprovedTrainingOrSkillDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Experience" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.experience}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedExperienceArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedExperience}" styleClass="#{vacsToBeReviewedByChecker.unapprovedExperienceDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Eligibility" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.eligibility}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedEligibilityArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedEligibility}" styleClass="#{vacsToBeReviewedByChecker.unapproveEligibilityDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Opening Date" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.openFrom}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedOpenFromArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedOpenFrom}" styleClass="#{vacsToBeReviewedByChecker.unapprovedOpenFromDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Closing Date" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.openTo}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedOpenToArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedOpenTo}" styleClass="#{vacsToBeReviewedByChecker.unapprovedOpenToDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.requiredNo}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedRequiredNoArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedRequiredNo}" styleClass="#{vacsToBeReviewedByChecker.unapprovedRequiredNoDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Remark" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.remark}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedRemarkArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedRemark}" styleClass="#{vacsToBeReviewedByChecker.unapproveRemarkDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Type" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.vacancyType}" />
+                                <h:outputText value="->" styleClass="#{vacsToBeReviewedByChecker.unapprovedVacancyTypeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{vacsToBeReviewedByChecker.unapprovedVacancyType}" styleClass="#{vacsToBeReviewedByChecker.unapproveVacancyTypeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.createdBy}" />
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.creationTimeStamp}" />
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.editedBy}" />
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{vacsToBeReviewedByChecker.editingTimeStamp}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppVacsDataTblOnCheckerSide" styleClass="#{vacancyBean.pnlForAppVacsDataTblOnCheckerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Delete" actionListener="#{vacancyBean.btnForDeleteSelectedVacRowsOnCheckerSide}" update=":messages frmForChecker:dtblForVacsToBeReviewedByChecker frmForChecker:dtblForAppVacsOnCheckerSide" />
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForAppVacsOnCheckerSide" var="appVacsOnCheckerSide" value="#{vacancyBean.appVacs}" rowIndexVar="rowIndex"  rowKey="#{appVacsOnCheckerSide.id}" selection="#{vacancyBean.selectedRowsInAppVacsDataTblOnCheckerSide}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Organizational Structure" >
+                                <h:outputText value="#{appVacsOnCheckerSide.organizationalStructure.name}" />
+                            </p:column>
+                            <p:column  headerText="Vacant Position" >
+                                <h:outputText value="#{appVacsOnCheckerSide.position.title}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{appVacsOnCheckerSide.vacancyNumber}" />
+                            </p:column>
+                            <p:column  headerText="Required Qualification" >
+                                <h:outputText value="#{appVacsOnCheckerSide.qualification}" />
+                            </p:column>
+                            <p:column  headerText="Required Training Or Skill" >
+                                <h:outputText value="#{appVacsOnCheckerSide.trainingOrSkill}" />
+                            </p:column>
+                            <p:column  headerText="Required Experience" >
+                                <h:outputText value="#{appVacsOnCheckerSide.experience}" />
+                            </p:column>
+                            <p:column  headerText="Eligibility" >
+                                <h:outputText value="#{appVacsOnCheckerSide.eligibility}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Opening Date" >
+                                <h:outputText value="#{appVacsOnCheckerSide.openFrom}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Closing Date" >
+                                <h:outputText value="#{appVacsOnCheckerSide.openTo}" />
+                            </p:column>
+                            <p:column  headerText="Required Number" >
+                                <h:outputText value="#{appVacsOnCheckerSide.requiredNo}" />
+                            </p:column>
+                            <p:column  headerText="Remark" >
+                                <h:outputText value="#{appVacsOnCheckerSide.remark}" />
+                            </p:column>
+                            <p:column  headerText="Vacancy Type" >
+                                <h:outputText value="#{appVacsOnCheckerSide.vacancyType}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{appVacsOnCheckerSide.createdBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{appVacsOnCheckerSide.creationTimeStamp}" />                   
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{appVacsOnCheckerSide.editedBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{appVacsOnCheckerSide.editingTimeStamp}" />                   
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

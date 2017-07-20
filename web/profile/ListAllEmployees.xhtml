@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:sec="http://www.springframework.org/security/tags">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+
+            <p:panel header="All Employees" >
+                <p:menubar>
+                    <p:submenu label="Employee">
+                        <sec:authorize   access="hasAuthority('CREATE_EMPLOYEE')">
+                            <p:menuitem value="New" actionListener="#{listAllEmployeesBean.newEmployee}" />
+                            <p:separator />
+                        </sec:authorize>
+                        <p:menuitem value="View Detail"  actionListener="#{listAllEmployeesBean.viewEmployeeDetails()}" update=":msgs"/>                   
+                        <p:menuitem value="Change Profile Photo"  actionListener="#{listAllEmployeesBean.changeProfilePhoto}" update=":msgs"/>
+                    </p:submenu>
+                    <p:submenu label="Qualification">
+                        <p:menuitem value="Add " actionListener="#{listAllEmployeesBean.addEmployeeQualification}" update=":msgs" />                        
+                        <p:menuitem value="View"  actionListener="#{listAllEmployeesBean.viewEmployeeQualification}" update=":msgs"/>                       
+                    </p:submenu>
+                    <p:submenu label="Experience">
+                        <p:menuitem value="Add " actionListener="#{listAllEmployeesBean.addEmployeeExperience}" update=":msgs" />                        
+                        <p:menuitem value="View"  actionListener="#{listAllEmployeesBean.viewEmployeeExperience}" update=":msgs"/>                       
+                    </p:submenu>
+                    <p:submenu label="Training">
+                        <p:menuitem value="Add " actionListener="#{listAllEmployeesBean.addEmployeeTraining}" update=":msgs" />                        
+                        <p:menuitem value="View"  actionListener="#{listAllEmployeesBean.viewEmployeeTraining}" update=":msgs"/>                       
+                    </p:submenu>
+                    <p:submenu label="Referee">
+                        <p:menuitem value="Add " actionListener="#{listAllEmployeesBean.addEmployeeReferee}" update=":msgs" />                        
+                        <p:menuitem value="View"  actionListener="#{listAllEmployeesBean.viewEmployeeReferee}" update=":msgs"/>                       
+                    </p:submenu>
+                    <p:submenu label="Reference">
+                        <p:menuitem value="Add " actionListener="#{listAllEmployeesBean.addEmployeeReference}" update=":msgs" />                        
+                        <p:menuitem value="View"  actionListener="#{listAllEmployeesBean.viewEmployeeReference}" update=":msgs"/>                       
+                    </p:submenu>
+                </p:menubar>
+
+                <p:dataTable  id="employeesDataTable" var="emp" value="#{listAllEmployeesBean.lazyEmployeeModel}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" emptyMessage="No employees found."
+                              rowKey="#{emp.employeeSerialID}" selection="#{listAllEmployeesBean.selectedEmployee}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" lazy="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <p:ajax event="rowSelect" listener="#{listAllEmployeesBean.employeesDataTable_rowSelected}" update="" /> 
+                    <p:column headerText="Employee ID" sortBy="#{emp.employeeID}" filterBy="#{emp.employeeID}">
+                        #{emp.employeeID}
+                    </p:column>
+                    <p:column  headerText="Name" sortBy="#{emp.firstName}" filterBy="#{emp.firstName}" >
+                        <h:outputText value="#{emp.firstName}" />                   
+
+                    </p:column>
+                    <p:column  headerText="Middle Name" sortBy="#{emp.middleName}" filterBy="#{emp.middleName}" >
+                        <h:outputText value="#{emp.middleName}" />                      
+
+                    </p:column>
+                    <p:column  headerText="Last Name" sortBy="#{emp.lastName}" filterBy="#{emp.lastName}" >
+                        <h:outputText value="#{emp.lastName}"  />                      
+
+                    </p:column>                  
+                    <p:column headerText="File Index No." sortBy="#{emp.fileIndexNumber}" filterBy="#{emp.fileIndexNumber}">
+                        #{emp.fileIndexNumber}
+                    </p:column>
+                    <p:column  headerText="Gender" filterBy="#{emp.gender}">
+                        <h:outputText value="#{emp.gender}" />
+                    </p:column>   
+                    <p:column  headerText="Date of Employement" sortBy="#{emp.dateOfEmployement}" filterBy="#{emp.dateOfEmployement}">
+                        <h:outputText value="#{emp.dateOfEmployement}"  />                     
+
+                    </p:column>
+                    <p:column  headerText="Status" sortBy="#{emp.status}" filterBy="#{emp.status}">
+                        <h:outputText value="#{emp.status}" />             
+
+                    </p:column>
+                </p:dataTable>            
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

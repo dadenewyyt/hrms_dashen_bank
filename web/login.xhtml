@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Human Resource Management System</title>
+        <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Application</title>
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/bootstrap.min.css"></link>      
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/bootstrap-theme.min.css"></link>
+        <link rel="stylesheet" type="text/css" 
+              href="#{request.contextPath}/resources/css/navbar-fixed-top.css"></link> 
+    </h:head>
+    <h:body >
+        <div class="container-fluid ">            
+            <div class="row" > 
+                <div class="col-sm-12 col-md-5 col-md-offset-3 ">
+                    <div class="panel panel-primary" style="background-color: #29368a;">
+                        <div class="row" >
+                            <div class="col-sm-4 col-md-4">
+                                <img class="img-responsive img-rounded " src="resources/images/logo.jpg"/>
+                            </div>
+                            <div class="col-md-8" >
+                                <img class="img-responsive img-rounded " src="resources/images/hr-image2.jpg"/>
+                            </div>
+                        </div>
+                        <div class="panel-body" >
+                            <div class="text-uppercase  h3 col-sm-6 col-md-9" style="color: white" >
+                                Dashen Bank HR System
+                            </div>
+                            <form action="#{request.contextPath}/login.xhtml" method="post">    
+                                <div class="form-group">    
+                                    <h:outputText class="text-danger" value="Incorrect username and/or password." rendered="#{ param.error ne null}" />
+                                </div>
+                                <div class="form-group">    
+                                    <h:outputText value="You have been logged out." rendered="#{param.logout ne null}" />
+                                </div>
+                                <div class="form-group">               
+                                    <input  class="form-control" type="text" id="username" placeholder="Username" name="username"/>	
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="password" id="password" placeholder="Password" name="password"/>	
+                                </div>
+                                <div class="form-group pull-right">                                    
+                                    <button type="submit"  class="btn btn-primary">Log in</button>    
+                                </div>
+                            </form>    
+                        </div>
+                    </div>
+                </div>                           
+            </div>
+        </div>
+        <h:outputScript name="js/jquery.min.js" />
+        <h:outputScript name="js/bootstrap.min.js" />
+    </h:body>
+</html>
+

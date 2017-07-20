@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true"  /> 
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel header="Leave Types">
+                <p:panel>
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,labelColumn" columns="4">
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText  id="nameInputText" value="#{leaveTypeBean.leaveType.title}" >
+                                <f:validateLength maximum="80" minimum="3"></f:validateLength>
+                            </p:inputText><br />
+                            <p:message id="ms1" for="nameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Description : "/>
+                        <h:panelGroup>
+                            <p:inputText id="descriptionInputText" value="#{leaveTypeBean.leaveType.description}" >
+                                <f:validateLength maximum="80" minimum="3"></f:validateLength>
+                                <p:message id="ms2" for="descriptionInputText" style="color:red" display="text"></p:message>
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        
+                    </p:panelGrid>
+                    <p:commandButton   id ="btnNewLeaveType" value="New"  icon="fa fa-fw fa-plus" actionListener="#{leaveTypeBean.btnNewLeaveType_Handler()}" update=":msgs ms1 ms2 nameInputText descriptionInputText departmentsDataTable"> 
+
+                    </p:commandButton>
+                    <p:commandButton id="btnSaveNewDepartment" value="Save" icon="fa fa-fw fa-save" 
+                                            actionListener="#{leaveTypeBean.btnSaveNewLeaveType_Handler}" update=":msgs">
+                    </p:commandButton>
+                    <p:commandButton value="Delete" actionListener="#{leaveTypeBean.btnDeleteLeaveType_Handler}" icon="fa fa-fw fa-remove" update=":msgs ms1 ms2  nameInputText descriptionInputText  departmentsDataTable">
+                        <p:confirm header="Delete Department" message="Are you sure you want to delete the selected department?" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                </p:panel>
+                <p:panel>          
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" 
+                                    actionListener="#{leaveTypeBean.btnRefreshList_Handler}" process="@this" update=":msgs departmentsDataTable">
+                    </p:commandButton> 
+                </p:panel>
+                <p:dataTable  id="departmentsDataTable" var="leaveType" value="#{leaveTypeBean.leaveTypeList}" 
+                                selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                                rowKey="#{leaveType}" selection="#{leaveTypeBean.selectedLeaveType}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <p:ajax event="rowSelect" update="inputForm:nameInputText inputForm:descriptionInputText " listener="#{leaveTypeBean.leaveTypeDataTable_rowSelected}" />                             
+                    <p:column  headerText="Name">
+                        <h:outputText value="#{leaveType.title}" />
+                    </p:column>
+                    <p:column  headerText="Description">
+                        <h:outputText value="#{leaveType.description}" />                      
+                    </p:column>
+                </p:dataTable> 
+
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

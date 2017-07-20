@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Salary Scale">
+                <p:panel header="SalaryScales" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedSalaryScale" value="Edit">
+                            <p:ajax event="click" listener="#{salaryScaleBean.btnEditSelectedSalaryScale_Handler}"  process="@this salaryScalesDataTable"  update=":msgs inputForm:inputPanel btnSaveSalaryScale" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="salaryScalesDataTable" var="salaryScale" value="#{salaryScaleBean.salaryScalesList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 rowKey="#{salaryScale.ID}" selection="#{salaryScaleBean.selectedSalaryScale}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Salary Scales
+                        </f:facet>
+                        <p:column headerText=" " style="width: 50px">
+                            <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                        </p:column>
+                        <p:column  headerText="Job Grade" >
+                            <h:outputText value="#{salaryScale.grade.grade}" />
+                        </p:column>
+                        <p:column  headerText="Job Level" >
+                            <h:outputText value="#{salaryScale.level.level}" />
+                        </p:column>
+                        <p:column  headerText="Step Incrment" >
+                            <h:outputText value="#{salaryScale.stepIncrement}">
+                                <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="Job Grade : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{salaryScaleBean.rowSubmitted}" id="gradeSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Grade must be selected."
+                                         value="#{salaryScaleBean.currentTempSalaryScale.grade.ID}" >
+                                <f:selectItem itemLabel="--Select Job Grade--" itemValue=""/>
+                                <f:selectItems value ="#{salaryScaleBean.jobGradeList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms1" for="gradeSelectOneMenu" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Job Level : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{salaryScaleBean.rowSubmitted}" id="levelSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Level must be selected."
+                                         value="#{salaryScaleBean.currentTempSalaryScale.level.ID}" >
+                                <f:selectItem itemLabel="--Select Job Level--" itemValue=""/>
+                                <f:selectItems value ="#{salaryScaleBean.jobLevelList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms2" for="levelSelectOneMenu" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Step Incrment : "/>
+                        <h:panelGroup>
+                            <p:inputNumber disabled="#{salaryScaleBean.rowSubmitted}" id="stepIncrementInputText" style="width: 280px" required="true"  requiredMessage="Step increment cannot be empty." value="#{salaryScaleBean.currentTempSalaryScale.stepIncrement}" > 
+
+                            </p:inputNumber><br/>
+                            <p:message id="ms3" for="stepIncrementInputText" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton   id ="btnNewSalaryScale" value="New"  icon="fa fa-fw fa-plus" actionListener="#{salaryScaleBean.btnNewSalaryScale_Handler}" update=":msgs inputForm:inputPanel btnSaveSalaryScale"> 
+
+                    </p:commandButton>
+                    <p:commandButton   id ="btnSaveSalaryScale" value="Save" disabled="#{salaryScaleBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{salaryScaleBean.btnSaveSalaryScale_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpSalaryScalesDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">  
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{salaryScaleBean.btnRefreshList_Handler}" process="@this" update=":msgs tmpSalaryScalesDataTable "> 
+                    </p:commandButton> 
+                    <p:commandButton  disabled="#{salaryScaleBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{salaryScaleBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpSalaryScalesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{salaryScaleBean.rowSubmitted}" value="Delete Row" actionListener="#{salaryScaleBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpSalaryScalesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable  id="tmpSalaryScalesDataTable" var="tmpSalaryScale" value="#{salaryScaleBean.tempSalaryScalesList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{tmpSalaryScale.ID}" selection="#{salaryScaleBean.selectedTempSalaryScale}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Salary Scales
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpSalaryScalesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel" listener="#{salaryScaleBean.tmpSalaryScalesDataTableDataTable_rowSelected}" />
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    <p:column  headerText="Job Grade" >
+                        <h:outputText value="#{tmpSalaryScale.grade.grade}" />
+                    </p:column>
+                    <p:column  headerText="Job Level" >
+                        <h:outputText value="#{tmpSalaryScale.level.level}" />
+                    </p:column>
+                    <p:column  headerText="Step Increment" >
+                        <h:outputText value="#{tmpSalaryScale.stepIncrement}">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpSalaryScale.tmpStatus}" />
+                    </p:column> 
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" globalOnly="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Institutions" >
+                <p:panel>
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="nameInputText" style="width: 280px" required="true"  requiredMessage="Name cannot be empty." validatorMessage="Name must be 2-60 characters in length."
+                                            value="#{institutionBean.inst.name}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="nameInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="City : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="cityInputText" style="width: 280px" required="true"  requiredMessage="City cannot be empty." validatorMessage="City must be 2-60 characters in length."
+                                            value="#{institutionBean.inst.city}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms2" for="cityInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Country : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="countryInputText" style="width: 280px" required="true"  requiredMessage="Country cannot be empty." validatorMessage="Country must be 2-60 characters in length."
+                                            value="#{institutionBean.inst.country}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms3" for="countryInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Location : "/>
+                        <h:panelGroup>
+                            <p:inputText    id="locationInputText" style="width: 280px" required="true"  requiredMessage="Location cannot be empty." validatorMessage="Location must be 2-100 characters in length."
+                                            value="#{institutionBean.inst.location}" > 
+
+                                <f:validateLength maximum="100" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms4" for="locationInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                    <p:commandButton   id ="btnNewInstitution" value="New"  icon="fa fa-fw fa-plus" actionListener="#{institutionBean.btnNewInstitution_Handler}" update=":msgs ms1 ms2 ms3 ms4 nameInputText cityInputText countryInputText locationInputText institutionsDataTable"> 
+
+                    </p:commandButton>
+                    <p:commandButton   id ="btnSaveInstitution" value="Save"  icon="fa fa-fw fa-save" actionListener="#{institutionBean.btnSaveInstitution_Handler}" update=":msgs ms1 ms2 ms3 ms4 nameInputText cityInputText countryInputText locationInputText institutionsDataTable"> 
+
+                    </p:commandButton> 
+                    <p:commandButton value="Delete" actionListener="#{institutionBean.btnDeleteInstitution_Handler}" icon="fa fa-fw fa-remove" update=":msgs ms1 ms2 ms3 ms4 nameInputText cityInputText countryInputText locationInputText institutionsDataTable">
+                        <p:confirm header="Dlete Institution" message="Are you sure you want to delete the selected instituton?" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                </p:panel>
+
+
+
+                <p:panel>
+
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{institutionBean.btnRefreshList_Handler}" process="@this" update=":msgs institutionsDataTable "> 
+
+                    </p:commandButton> 
+
+                </p:panel>
+             
+                <p:dataTable  id="institutionsDataTable" var="inst" value="#{institutionBean.institutionsList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                                  rowKey="#{inst.id}" selection="#{institutionBean.selectedInstitution}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                        <p:ajax event="rowSelect" update="inputForm:nameInputText inputForm:cityInputText inputForm:countryInputText inputForm:locationInputText" listener="#{institutionBean.institutionsDataTable_rowSelected}" />                             
+                        <p:column  headerText="Name" >
+                            <h:outputText value="#{inst.name}" />                   
+
+                        </p:column>
+                        <p:column  headerText="City" >
+                            <h:outputText value="#{inst.city}" />                      
+
+                        </p:column>
+                        <p:column  headerText="Country" >
+                            <h:outputText value="#{inst.country}" />                      
+
+                        </p:column>
+                        <p:column  headerText="Location" >
+                            <h:outputText value="#{inst.location}" />                         
+
+                        </p:column>                   
+
+                        <p:column  headerText="Created By" >
+                            <h:outputText value="#{inst.createdBy}" />                    
+
+                        </p:column>                    
+                        <p:column  headerText="Date Created" >
+                            <h:outputText value="#{inst.createdDate}"  />                     
+
+                        </p:column>
+
+                    </p:dataTable>            
+
+            </p:panel>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

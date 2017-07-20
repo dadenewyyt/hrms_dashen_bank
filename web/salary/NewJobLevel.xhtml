@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="messages" showDetail="true"  /> 
+        <p:panel>New Job Level</p:panel>
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel>
+                <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4"
+                             style="font-size: 1em; top: 30px; left: 15px;">
+                    <h:outputText value="Level : "/>
+                    <h:panelGroup>
+                        <p:inputText id="levelInputText" value="#{newJobLevelBean.newJobLevel.level}" >
+                            <f:validateLength maximum="80" minimum="1"></f:validateLength>
+                        </p:inputText>
+                        <p:message for="levelInputText" id="ms1" display="text"></p:message>
+                    </h:panelGroup>
+                    
+                    <h:outputText value="Description : "/>
+                    <h:panelGroup>
+                        <p:inputText id="descriptionInputText" value="#{newJobLevelBean.newJobLevel.description}" >
+                            <f:validateLength maximum="80" minimum="3"></f:validateLength>
+                        </p:inputText>
+                        <p:message for="descriptionInputText" id="ms2" display="text"></p:message>
+                    </h:panelGroup>
+                </p:panelGrid>
+            </p:panel>
+            <p:panel>          
+                <p:commandButton id ="btnSaveNewJobLevel" value="Save"  icon="fa fa-fw fa-save"
+                                   actionListener="#{newJobLevelBean.btnSaveNewJobLevel_Handler}" update=":messages">
+                </p:commandButton>
+                <p:button id="btnCancelNewJobLevel" value="Cancel" icon="fa fa-times" outcome="JobLevelList"></p:button>
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

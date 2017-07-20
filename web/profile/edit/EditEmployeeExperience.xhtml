@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Experiences">
+                <p:panel header="Experiences For #{editEmployeeExperienceBean.employee.fullName}" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedExperience" value="Edit">
+                            <p:ajax event="click" listener="#{editEmployeeExperienceBean.btnEditSelectedExperience_Handler}"  process="@this experiencesDataTable"  update=":msgs inputForm:inputPanel btnSaveExperience" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="experiencesDataTable" var="varE" value="#{editEmployeeExperienceBean.employeeExperiencesList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 emptyMessage="No Experiences" rowKey="#{varE.id}" selection="#{editEmployeeExperienceBean.selectedExperience}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Experiences
+                        </f:facet>
+                        <p:column style="width:40px">
+                            <p:rowToggler   />
+                        </p:column>
+                        <p:column  headerText="Name of Employer" >
+                            <h:outputText value="#{varE.nameOfEmployer}" />
+                        </p:column>                   
+                        <p:column  headerText="Employer Address" >
+                            <h:outputText value="#{varE.employerAddress}" />
+                        </p:column> 
+                        <p:column  headerText="Position" >
+                            <h:outputText value="#{varE.position}" />
+                        </p:column> 
+                        <p:column  headerText="Start Date" >
+                            <h:outputText value="#{varE.startDate}" />
+                        </p:column> 
+                        <p:column  headerText="End Date" >
+                            <h:outputText value="#{varE.endDate}" />
+                        </p:column> 
+                        <p:column  headerText="Total Years" >
+                            <h:outputText value="#{varE.totalYearsOfExperience}" />
+                        </p:column> 
+                        <p:column  headerText="Reason for Resignation" >
+                            <h:outputText value="#{varE.reasonForResignation}" />
+                        </p:column> 
+                        <p:rowExpansion > 
+
+                            <p:panel>                            
+                                <p:graphicImage   value="#{configuration.EXPERIENCE_DOCUMENTS_PATH}#{varE.fileName}" height="200" width="200"  />     
+                            </p:panel>
+                        </p:rowExpansion>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Employer : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeExperienceBean.rowSubmitted}"   id="employerInputText" style="width: 280px" required="true"  requiredMessage="Employer cannot be empty." validatorMessage="Employer must be 2-60 characters in length."
+                                         value="#{editEmployeeExperienceBean.currentTempExp.nameOfEmployer}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="employerInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Employer Address : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeExperienceBean.rowSubmitted}"   id="employerAdderssInputText" style="width: 280px" required="true"  requiredMessage="Employer Address cannot be empty." validatorMessage="Employer Address must be 2-60 characters in length."
+                                         value="#{editEmployeeExperienceBean.currentTempExp.employerAddress}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms2" for="employerAdderssInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Position : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeExperienceBean.rowSubmitted}"   id="positionInputText" style="width: 280px" required="true"  requiredMessage="Position cannot be empty." validatorMessage="Position must be 2-60 characters in length."
+                                         value="#{editEmployeeExperienceBean.currentTempExp.position}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms3" for="positionInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Start Date : "/>                   
+                        <p:calendar disabled="#{editEmployeeExperienceBean.rowSubmitted}" readonlyInput="true" id="startDateCalendar" pattern="dd-MMM-yyyy" size="35"  required="true" 
+                                    value="#{editEmployeeExperienceBean.currentTempExp.startDate}" >    
+                        </p:calendar>
+                        <h:outputText value="End Date : "/>                   
+                        <p:calendar disabled="#{editEmployeeExperienceBean.rowSubmitted}" readonlyInput="true" id="endDateCalendar" pattern="dd-MMM-yyyy" size="35"  required="true" 
+                                    value="#{editEmployeeExperienceBean.currentTempExp.endDate}" >    
+                        </p:calendar>
+                        <h:outputText value="Total Years : "/>
+                        <h:panelGroup>
+                            <p:inputNumber id="totalYearsInputNumber" disabled="#{editEmployeeExperienceBean.rowSubmitted}" maxValue="10.0" size="35"  required="true"  requiredMessage="Total Years Cannot be empty." validatorMessage="Total Years must be between 0.0 - 60.0."
+                                           emptyValue="0.00" value="#{editEmployeeExperienceBean.currentTempExp.totalYearsOfExperience}">
+                                <f:validateDoubleRange maximum="60.0"   minimum="0.0" />
+                            </p:inputNumber> 
+                            <p:message id="ms4" for="totalYearsInputNumber" style="color:red" display="text"></p:message>
+                        </h:panelGroup>  
+                        <h:outputText value="Reason for Resignation : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{editEmployeeExperienceBean.rowSubmitted}"   id="reasonInputText" style="width: 280px" required="true"  requiredMessage="Reason for Resignation cannot be empty." validatorMessage="Reason for Resignation must be 2-60 characters in length."
+                                         value="#{editEmployeeExperienceBean.currentTempExp.reasonForResignation}" > 
+
+                                <f:validateLength maximum="60" minimum="2"   ></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms5" for="reasonInputText" style="color:red" display="text"></p:message>
+                        </h:panelGroup>
+
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton   id ="btnNewExperience" value="New"  icon="fa fa-fw fa-plus"> 
+                        <p:ajax event="click" listener="#{editEmployeeExperienceBean.btnNewExperience_Handler()}" update=":msgs inputForm:inputPanel btnSaveExperience"></p:ajax>
+                    </p:commandButton>
+                    <p:commandButton   id ="btnSaveExperience" value="Save" disabled="#{editEmployeeExperienceBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{editEmployeeExperienceBean.btnSaveExperience_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpExperiencesDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">  
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" > 
+                        <p:ajax event="click" listener="#{editEmployeeExperienceBean.btnRefreshList_Handler}" update=":msgs  inputForm:inputPanel inputForm:actionsPanel tmpExperiencesDataTable "/>
+                    </p:commandButton> 
+                    <p:commandButton disabled="#{editEmployeeExperienceBean.rowSubmitted}" value="Change / Upload Document" type="button" onclick="PF('documentUploadDlg').show()" />
+                    <p:commandButton disabled="#{editEmployeeExperienceBean.rowSubmitted}" id="btnRemoveUploadedDocument" value="Remove Uploaded Document" >
+                        <p:ajax event="click" listener="#{editEmployeeExperienceBean.btnRemoveUploadedPhoto_Handler}" update=":msgs tmpExperiencesDataTable"/>
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{editEmployeeExperienceBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{editEmployeeExperienceBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpExperiencesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{editEmployeeExperienceBean.rowSubmitted}" value="Delete Row" actionListener="#{editEmployeeExperienceBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpExperiencesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable  id="tmpExperiencesDataTable" var="tmpE" value="#{editEmployeeExperienceBean.tempEmployeeExperiencesList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              emptyMessage="No Experiences" rowKey="#{tmpE.id}" selection="#{editEmployeeExperienceBean.selectedTempExperience}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Experiences For Employee
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpExperiencesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel documentUploadDlg" listener="#{editEmployeeExperienceBean.tmpExperiencesDataTableDataTable_rowSelected}" />                             
+                    <p:column style="width:40px">
+                        <p:rowToggler   />
+                    </p:column>
+                    <p:column  headerText="Name of Employer" >
+                        <h:outputText value="#{tmpE.nameOfEmployer}" />
+                    </p:column>                   
+                    <p:column  headerText="Employer Address" >
+                        <h:outputText value="#{tmpE.employerAddress}" />
+                    </p:column> 
+                    <p:column  headerText="Position" >
+                        <h:outputText value="#{tmpE.position}" />
+                    </p:column> 
+                    <p:column  headerText="Start Date" >
+                        <h:outputText value="#{tmpE.startDate}" />
+                    </p:column> 
+                    <p:column  headerText="End Date" >
+                        <h:outputText value="#{tmpE.endDate}" />
+                    </p:column> 
+                    <p:column  headerText="Total Years" >
+                        <h:outputText value="#{tmpE.totalYearsOfExperience}" />
+                    </p:column> 
+                    <p:column  headerText="Reason for Resignation" >
+                        <h:outputText value="#{tmpE.reasonForResignation}" />
+                    </p:column> 
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpE.tmpStatus}" />
+                    </p:column> 
+                    <p:rowExpansion >
+                        <p:panel>                            
+                            <p:graphicImage   value="#{configuration.EXPERIENCE_DOCUMENTS_PATH}#{tmpE.tmpDocumentFileName}" height="200" width="200"  />     
+                        </p:panel>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+        <p:dialog id="documentUploadDlg" header="Upload Document" modal="true" widgetVar="documentUploadDlg" appendTo="@(body)">
+            <h:form>
+                <p:panel>
+                    <h:outputText value="Change Document for #{editEmployeeExperienceBean.currentTempExp.nameOfEmployer}" />
+                    <p:panel header="Change Document" >
+                        <h:form enctype="multipart/form-data"> 
+                            <p:fileUpload   uploadLabel="Upload Document" fileUploadListener="#{editEmployeeExperienceBean.upload}"   oncomplete="PF('documentUploadDlg').hide()"
+                                            label="Choose Document" fileLimit="1" fileLimitMessage="Please upload only one document."   sizeLimit="2000000" 
+                                            invalidSizeMessage="File size must be less than 2 MB." allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/" invalidFileMessage="Invalid file format." >                                 
+                            </p:fileUpload>                
+                        </h:form>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../masterTemplate.xhtml">
+            <ui:define name="content">
+                <p:growl id="messages" showDetail="true"  /> 
+                <p:panel id="pnlForRegPageHeading" styleClass="#{vacancyTransferBean.pnlForRegPageHeadingRender ? 'show' : 'hide'}">Register Vacancy Transfer Request/s</p:panel>
+                <p:panel id="pnlForAppPageHeading" styleClass="#{vacancyTransferBean.pnlForAppPageHeadingRender ? 'show' : 'hide'}">Approve Vacancy Transfer Request/s</p:panel>
+                <h:form id="frmForMaker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForInputFieldsOnMakerSide" styleClass="#{vacancyTransferBean.pnlForInputFieldsOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:panelGrid styleClass="inputGrid" columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                            <h:outputText value="Vacancy Number : "/>
+                            <p:selectOneMenu id="drpDnForVacNoOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{vacancyTransferBean.vacTra.vacancy.id}" required="true"  requiredMessage="Please Select the Vacancy.">
+                                <f:selectItem itemLabel="--Select Vacancy--" itemValue=""/>
+                                <f:selectItems value ="#{vacancyTransferBean.vacSelectItem}" />
+                                
+                            </p:selectOneMenu >
+                            <h:outputText value="Employee Name : "/>
+                            <p:selectOneMenu id="drpDnForEmpNamOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{vacancyTransferBean.vacTra.employee.employeeSerialID}" required="true"  requiredMessage="Please Select an Employee.">
+                                <f:selectItem itemLabel="--Select Employee--" itemValue=""/>
+                                <f:selectItems value ="#{vacancyTransferBean.empSelectItem}" />                               
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="pnlForUnappReqtsDataTblOnMakerSide" styleClass="#{vacancyTransferBean.pnlForUnappReqtsDataTblOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:dataTable  id="dtblForUnappReqtsOnMakerSide" var="unappReqtsOnMakerSide" value="#{vacancyTransferBean.unappReqts}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{unappReqtsOnMakerSide.id}" selection="#{vacancyTransferBean.selectedRowInUnappReqtsDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide" listener="#{vacancyTransferBean.unappReqtsDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{unappReqtsOnMakerSide.vacancy.vacancyNumber}" />
+                                <h:outputText value="->" styleClass="#{unappReqtsOnMakerSide.unapprovedVacancyArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappReqtsOnMakerSide.unapprovedVacancy.vacancyNumber}" styleClass="#{unappReqtsOnMakerSide.unapprovedVacancyDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{unappReqtsOnMakerSide.employee.fullName}" />
+                                <h:outputText value="->" styleClass="#{unappReqtsOnMakerSide.unapprovedEmployeeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappReqtsOnMakerSide.unapprovedEmployee.fullName}" styleClass="#{unappReqtsOnMakerSide.unapprovedEmployeeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppReqtsDataTblOnMakerSide" styleClass="#{vacancyTransferBean.pnlForAppReqtsDataTblOnMakerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:dataTable  id="dtblForAppReqtsOnMakerSide" var="appReqtsOnMakerSide" value="#{vacancyTransferBean.appReqts}" selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{appReqtsOnMakerSide.id}" selection="#{vacancyTransferBean.selectedRowInAppReqtsDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide" listener="#{vacancyTransferBean.AppReqtsDataTblOnMakerSideRowSelectedListener}" />
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{appReqtsOnMakerSide.vacancy.vacancyNumber}" />                   
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{appReqtsOnMakerSide.employee.fullName}" />                   
+                            </p:column>                           
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForBtnsOnMakerSide" styleClass="#{vacancyTransferBean.pnlForBtnsOnMakerSideRender ? 'show' : 'hide'}">          
+                        <p:commandButton   id ="btnForResetVacTraOnMakerSide" value="Reset"  icon="fa fa-fw fa-plus" actionListener="#{vacancyTransferBean.btnForResetVacTraOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:dtblForUnappReqtsOnMakerSide frmForMaker:dtblForAppReqtsOnMakerSide"> </p:commandButton>
+                        <p:commandButton   id ="btnForSaveVacTraOnMakerSide" value="Save"  icon="fa fa-fw fa-save" actionListener="#{vacancyTransferBean.btnForSaveVacTraOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:dtblForUnappReqtsOnMakerSide frmForMaker:dtblForAppReqtsOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForSubmitVacTraOnMakerSide" value="Submit"  icon="fa fa-fw fa-save" actionListener="#{vacancyTransferBean.btnForSubmitVacTraOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:dtblForUnappReqtsOnMakerSide frmForMaker:dtblForAppReqtsOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForDeleteVacTraOnMakerSide" value="Delete"  icon="fa fa-fw fa-remove" actionListener="#{vacancyTransferBean.btnForDeleteVacTraOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:dtblForUnappReqtsOnMakerSide frmForMaker:dtblForAppReqtsOnMakerSide">
+                            <p:confirm icon="ui-icon-alert" header="Delete Vacancy Transfer" message="Are you sure you want to delete the selected Vacancy Transfer?"/>
+                        </p:commandButton>
+                    </p:panel>
+                </h:form>
+                <h:form id="frmForChecker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForReqtsToBeReviewedByCheckerDataTblAndBtns" styleClass="#{vacancyTransferBean.pnlForReqtsToBeReviewedByCheckerDataTblAndBtnsRender ? 'show' : 'hide'}">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Approve" actionListener="#{vacancyTransferBean.btnForApproveSelectedVacTraRowsOnCheckerSideHandler}" update=":messages frmForChecker:dtblForReqtsToBeReviewedByChecker frmForChecker:dtblForAppReqtsOnCheckerSide"/>
+                            <p:menuitem value="Make Editable" actionListener="#{vacancyTransferBean.btnForMakeSelectedVacTraRowsEditableOnCheckerSideHandler}" update=":messages frmForChecker:dtblForReqtsToBeReviewedByChecker frmForChecker:dtblForAppReqtsOnCheckerSide"/>
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForReqtsToBeReviewedByChecker" var="reqtsToBeReviewedByChecker" value="#{vacancyTransferBean.toBeReviewdReqts}" rowIndexVar="rowIndex"  rowKey="#{reqtsToBeReviewedByChecker.id}" selection="#{vacancyTransferBean.selectedRowsInReqtsToBeReviewedByCheckerDataTbl}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.vacancy.vacancyNumber}" />
+                                <h:outputText value="->" styleClass="#{reqtsToBeReviewedByChecker.unapprovedVacancyArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.unapprovedVacancy.vacancyNumber}" styleClass="#{reqtsToBeReviewedByChecker.unapprovedVacancyDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.employee.fullName}" />
+                                <h:outputText value="->" styleClass="#{reqtsToBeReviewedByChecker.unapprovedEmployeeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.unapprovedEmployee.fullName}" styleClass="#{reqtsToBeReviewedByChecker.unapprovedEmployeeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.createdBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.creationTimeStamp}" />                   
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.editedBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{reqtsToBeReviewedByChecker.editingTimeStamp}" />                   
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppReqtsDataTblOnCheckerSide" styleClass="#{vacancyTransferBean.pnlForAppReqtsDataTblOnCheckerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Delete" actionListener="#{vacancyTransferBean.btnForDeleteSelectedVacTraRowsOnCheckerSide}" update=":messages frmForChecker:dtblForReqtsToBeReviewedByChecker frmForChecker:dtblForAppReqtsOnCheckerSide" />
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForAppReqtsOnCheckerSide" var="appReqtsOnCheckerSide" value="#{vacancyTransferBean.appReqts}" rowIndexVar="rowIndex"  rowKey="#{appReqtsOnCheckerSide.id}" selection="#{vacancyTransferBean.selectedRowsInAppReqtsDataTblOnCheckerSide}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{appReqtsOnCheckerSide.vacancy.vacancyNumber}" />                   
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{appReqtsOnCheckerSide.employee.fullName}" />                   
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{appReqtsOnCheckerSide.createdBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{appReqtsOnCheckerSide.creationTimeStamp}" />                   
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{appReqtsOnCheckerSide.editedBy}" />                   
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{appReqtsOnCheckerSide.editingTimeStamp}" />                   
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

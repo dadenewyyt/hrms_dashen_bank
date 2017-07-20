@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="JobGrade">
+                <p:panel header="JobGrades" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedJobGrade" value="Edit">
+                            <p:ajax event="click" listener="#{jobGradeBean.btnEditSelectedJobGrade_Handler}"  process="@this jobGradesDataTable"  update=":msgs inputForm:inputPanel btnSaveJobGrade" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="jobGradesDataTable" var="jobGrade" value="#{jobGradeBean.jobGradesList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 rowKey="#{jobGrade.ID}" selection="#{jobGradeBean.selectedJobGrade}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            JobGrades
+                        </f:facet>
+                        <p:column headerText=" " style="width: 50px">
+                            <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                        </p:column>
+                        <p:column  headerText="Grade" >
+                            <h:outputText value="#{jobGrade.grade}" />
+                        </p:column>
+                        <p:column  headerText="Description" >
+                            <h:outputText value="#{jobGrade.description}" />
+                        </p:column>
+                        <p:column  headerText="Base Salary" >
+                            <h:outputText value="#{jobGrade.baseSalary}" style="text-align: right">
+                                <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Grade : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{jobGradeBean.rowSubmitted}"   id="gradeInputText" style="width: 280px" required="true"  requiredMessage="Grade cannot be empty." value="#{jobGradeBean.currentTempJobGrade.grade}" >
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="gradeInputText" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Description : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{jobGradeBean.rowSubmitted}" id="descriptionInputText" style="width: 280px" required="true" requiredMessage="Description cannot be empty." validatorMessage="Description must be 2-60 characters in length." value="#{jobGradeBean.currentTempJobGrade.description}">
+                                <f:validateLength maximum="60" minimum="2"></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms2" for="descriptionInputText" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Base Salary : "/>
+                        <h:panelGroup>
+                            <p:inputNumber disabled="#{jobGradeBean.rowSubmitted}" id="baseSalaryInputText" style="width: 280px" required="true" requiredMessage="Base salary cannot be empty." value="#{jobGradeBean.currentTempJobGrade.baseSalary}">
+                            </p:inputNumber><br/>
+                            <p:message id="ms3" for="baseSalaryInputText" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton id ="btnNewJobGrade" value="New" icon="fa fa-fw fa-plus" actionListener="#{jobGradeBean.btnNewJobGrade_Handler}" update=":msgs inputForm:inputPanel btnSaveJobGrade"> 
+
+                    </p:commandButton>
+                    <p:commandButton id ="btnSaveJobGrade" value="Save" disabled="#{jobGradeBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{jobGradeBean.btnSaveJobGrade_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpJobGradesDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{jobGradeBean.btnRefreshList_Handler}" process="@this" update=":msgs tmpJobGradesDataTable "> 
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{jobGradeBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{jobGradeBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpJobGradesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{jobGradeBean.rowSubmitted}" value="Delete Row" actionListener="#{jobGradeBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpJobGradesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable id="tmpJobGradesDataTable" var="tmpJobGrade" value="#{jobGradeBean.tempJobGradesList}" selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{tmpJobGrade.ID}" selection="#{jobGradeBean.selectedTempJobGrade}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending JobGrades
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpJobGradesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel" listener="#{jobGradeBean.tmpJobGradesDataTableDataTable_rowSelected}" />
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px" />
+                    </p:column>
+                    <p:column  headerText="Grade" >
+                        <h:outputText value="#{tmpJobGrade.grade}" />
+                    </p:column>
+                    <p:column headerText="Description">
+                        <h:outputText value="#{tmpJobGrade.description}"/>
+                    </p:column>
+                    <p:column headerText="Base Salary">
+                        <h:outputText value="#{tmpJobGrade.baseSalary}" style="text-align: right">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpJobGrade.tmpStatus}" />
+                    </p:column> 
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

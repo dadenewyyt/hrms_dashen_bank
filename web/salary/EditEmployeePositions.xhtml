@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Position">
+                <p:panel header="Employee Positions" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedEmployeePosition" value="Edit">
+                            <p:ajax event="click" listener="#{employeePositionBean.btnEditSelectedEmployeePosition_Handler}"  process="@this employeePositionsDataTable"  update=":msgs inputForm:inputPanel btnSaveEmployeePosition" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="employeePositionsDataTable" var="employeePosition" value="#{employeePositionBean.employeePositionsList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 rowKey="#{employeePosition.ID}" selection="#{employeePositionBean.selectedEmployeePosition}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Employee Positions
+                        </f:facet>
+                        <p:column  headerText="Employee" >
+                            <h:outputText value="#{employeePosition.employee.getFullName()}" />
+                        </p:column>
+                        <p:column  headerText="Position" >
+                            <h:outputText value="#{employeePosition.position.title}" />
+                        </p:column>
+                        <p:column headerText="Organizational Structure">
+                            <h:outputText value="#{employeePositionBean.isEmpPositionHasOrgStruct(employeePosition) eq true ? employeePositionBean.getEmpPositionOrgStructByID(employeePosition.getID()).getOrganizationalStructure().getName() : '-'}"/>
+                        </p:column>
+                        <p:column  headerText="Grade" >
+                            <h:outputText value="#{employeePosition.position.jobGrade.grade}" />
+                        </p:column>
+                        <p:column headerText="Level">
+                            <h:outputText value="#{employeePositionBean.isEmpPosHasSalaryScale(employeePosition) eq true ? employeePositionBean.getEmpPosSalaryScaleByID(employeePosition.getID()).getSalaryScale().getLevel().getLevel() : '-'}"/>
+                        </p:column>
+                        <p:column  headerText="Difference" >
+                            <h:outputText value="#{employeePosition.difference}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <h3>Position Filter</h3>
+                    <p:panelGrid columns="2">
+                        <h:outputText value="Type : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.rowSubmitted}" id="organizationalStructureTypeSelectOneMenu" style="width:250px" autoWidth="false"
+                                             value="#{employeePositionBean.currentOrgStructType.id}" >
+                                <f:selectItem itemLabel="--Select Organization Structure Type--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{employeePositionBean.organizationalStructureTypeList}" />
+                                <p:ajax event="itemSelect" listener="#{employeePositionBean.positionFilterTypeSelectOneMenu_itemSelect}" update="tierSelectOneMenu positionSelectOneMenu positionOrganizationalStructureSelectOneMenu"/>
+                            </p:selectOneMenu >
+                            <p:message  id="ms001" for="organizationalStructureTypeSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Structure : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.rowSubmitted}" id="positionOrganizationalStructureSelectOneMenu" style="width:250px" autoWidth="false" value="#{employeePositionBean.currentOrgStruct.id}" >
+                                <f:selectItem itemLabel="--Select Organization Structure--" itemValue=""/>
+                                <f:selectItems value ="#{employeePositionBean.organizationalStructureList}" />
+                                <p:ajax event="itemSelect" listener="#{employeePositionBean.positionFilterSelectOneMenu_itemSelect}" update="positionSelectOneMenu"/>
+                            </p:selectOneMenu >
+                            <p:message  id="ms002" for="positionOrganizationalStructureSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+
+                        <h:outputText value="Tier : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.orgStructureHasNoTier or employeePositionBean.rowSubmitted}" id="tierSelectOneMenu" filter="true" style="width:250px" autoWidth="false" 
+                                             value="#{employeePositionBean.currentTier.id}" >
+                                <f:selectItem itemLabel="--Select Tier--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{employeePositionBean.tierList}" />
+                                <p:ajax event="itemSelect" listener="#{employeePositionBean.positionFilterSelectOneMenu_itemSelect}" update="positionSelectOneMenu"/>
+                            </p:selectOneMenu >
+                            <p:message  id="ms003" for="tierSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                    <hr/>
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Employee : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.rowSubmitted}" id="employeeSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Select Employee"
+                                             value="#{employeePositionBean.currentTempEmpPos.employee.employeeSerialID}" >
+                                <f:selectItem itemLabel="--Select Employee--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{employeePositionBean.employeeList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms1" for="employeeSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Position : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.rowSubmitted}" id="positionSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Select Position"
+                                             value="#{employeePositionBean.currentTempEmpPos.position.ID}" >
+                                <f:selectItem itemLabel="--Select Position--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{employeePositionBean.positionList}" />
+                                <p:ajax event="itemSelect" listener="#{employeePositionBean.typeSelectOneMenu_itemSelect}" update="organizationalStructureSelectOneMenu salaryScaleSelectOneMenu positionTitleDisplay"/>
+                            </p:selectOneMenu >
+                            <p:message  id="ms2" for="positionSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Organizational Structure : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.positionHasOrgStruct or employeePositionBean.rowSubmitted}" id="organizationalStructureSelectOneMenu" filter="true" style="width:250px" autoWidth="false" required="true" requiredMessage="Select Organizational Structure"
+                                             value="#{employeePositionBean.currentEmpPositionOrgStruct.organizationalStructure.id}" >
+                                <f:selectItem itemLabel="--Select Organizatioanl Structure--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{employeePositionBean.orgStructList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms3" for="organizationalStructureSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Grade : "/>
+                        <h:outputText value="#{employeePositionBean.currentPosition.jobGrade.grade}" id="positionTitleDisplay"/>
+                        <h:outputText value="Level : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{employeePositionBean.rowSubmitted}" id="salaryScaleSelectOneMenu" filter="true" style="width:250px" autoWidth="false"
+                                             value="#{employeePositionBean.currentEmpPosSalaryScale.salaryScale.ID}" >
+                                <f:selectItem itemLabel="--Select Level--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{employeePositionBean.salaryScaleList}" />                               
+                            </p:selectOneMenu >
+                            <p:message  id="ms4" for="salaryScaleSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton id ="btnNewEmployeePosition" value="New" icon="fa fa-fw fa-plus" actionListener="#{employeePositionBean.btnNewEmployeePosition_Handler}" update=":msgs inputForm:inputPanel btnSaveEmployeePosition"> 
+
+                    </p:commandButton>
+                    <p:commandButton id ="btnSaveEmployeePosition" value="Save" disabled="#{employeePositionBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{employeePositionBean.btnSaveEmployeePosition_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpEmployeePositionsDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{employeePositionBean.btnRefreshList_Handler}" process="@this" update=":msgs tmpEmployeePositionsDataTable "> 
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{employeePositionBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{employeePositionBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpEmployeePositionsDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{employeePositionBean.rowSubmitted}" value="Delete Row" actionListener="#{employeePositionBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpEmployeePositionsDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable id="tmpEmployeePositionsDataTable" var="tmpEmployeePosition" value="#{employeePositionBean.tempEmployeePositionsList}" selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{tmpEmployeePosition.ID}" selection="#{employeePositionBean.selectedTempEmployeePosition}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Employee Positions
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpEmployeePositionsDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel" listener="#{employeePositionBean.tmpEmployeePositionsDataTableDataTable_rowSelected}" />  
+                    <p:column headerText=" " style="width:50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width:50px" />
+                    </p:column>
+                    <p:column  headerText="Employee" >
+                        <h:outputText value="#{tmpEmployeePosition.employee.getFullName()}" />
+                    </p:column>
+                    <p:column headerText="Position">
+                        <h:outputText value="#{tmpEmployeePosition.position.title}"/>
+                    </p:column>
+                    <p:column headerText="Organizational Structure">
+                        <h:outputText value="#{employeePositionBean.isEmpPositionHasOrgStruct(tmpEmployeePosition) eq true ? employeePositionBean.getEmpPositionOrgStructByID(tmpEmployeePosition.getID()).getOrganizationalStructure().getName() : '-'}"/>
+                    </p:column>
+                    <p:column headerText="Grade">
+                        <h:outputText value="#{tmpEmployeePosition.position.jobGrade.grade}"/>
+                    </p:column>
+                    <p:column headerText="Level">
+                        <h:outputText value="#{employeePositionBean.isEmpPosHasSalaryScale(tmpEmployeePosition) eq true ? employeePositionBean.getEmpPosSalaryScaleByID(tmpEmployeePosition.getID()).getSalaryScale().getLevel().getLevel() : '-'}"/>
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpEmployeePosition.tmpStatus}" />
+                    </p:column> 
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

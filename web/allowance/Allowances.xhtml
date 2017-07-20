@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <p:panel>          
+            Allowance List
+        </p:panel>
+        <p:button id="btnNewAllowance" value="Add New" icon="fa fa-plus" outcome="EditAllowances"></p:button>
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel>
+                <p:dataTable  id="allowancesDataTable" var="allowance" value="#{allowanceBean.allowancesList}" 
+                              rowIndexVar="rowIndex"  rowKey="#{allowance.ID}" tableStyle="table-layout: auto;">
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    <p:column   headerText="Type" >
+                        <h:outputText value="#{allowance.allowanceType.name}" />
+                    </p:column>
+                    <p:column headerText="Value" style="text-align: right">
+                        <h:outputText value="#{allowance.value}" style="text-align: right">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                        <h:outputText value="#{allowanceBean.isAllowanceTypeQuantitative(allowance.allowanceType) ? allowanceBean.getAllowanceTypeQuantitativeByTypeID(allowance.allowanceType.getID()).getMeasurementUnit() : '-'}" />
+                    </p:column>
+                    <p:column headerText="Position">
+                        <h:outputText value="#{allowance.allowanceType.dependsOnPosition eq true ? allowanceBean.getAllowancePositionByAllowanceID(allowance.getID()).position.title : '-'}" />
+                    </p:column>
+                    <p:column headerText="Location">
+                        <h:outputText value="#{allowance.allowanceType.dependsOnLocation eq true ? allowanceBean.getAllowanceLocationByAllowanceID(allowance.getID()).city.name : '-'}" />
+                    </p:column>
+                    <p:column headerText="Employment Center">
+                        <h:outputText value="#{allowance.allowanceType.dependsOnEmploymentCenter eq true ? allowanceBean.getAllowanceEmploymentCenterByAllowanceID(allowance.getID()).city.name : '-'}" />
+                    </p:column>
+                </p:dataTable>   
+            </p:panel> 
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

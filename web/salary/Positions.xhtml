@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <p:panel>          
+            Job Position List
+        </p:panel>
+        <p:button id="btnNewPosition" value="Add New" icon="fa fa-plus" outcome="EditPositions"></p:button>
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel>
+                <p:dataTable  id="positionsDataTable" var="position" value="#{positionBean.positionsList}" 
+                              rowIndexVar="rowIndex"  rowKey="#{position.ID}" tableStyle="table-layout: auto;">
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px" />
+                    </p:column>
+                    <p:column   headerText="Title" >
+                        <h:outputText value="#{position.title}" />
+                    </p:column>
+                    <p:column headerText="Grade">
+                        <h:outputText value="#{position.jobGrade.grade}"/>
+                    </p:column>
+                    <p:column  headerText="Structure" >
+                        <h:outputText value="#{position.hasOrganizationalStructure eq true ?  positionBean.getOrganizationalStructure(position).getName() : '-' }" />
+                    </p:column>
+                    <p:column   headerText="Organization Structure Type" >
+                        <h:outputText value="#{position.organizationalStructureType.name}" />
+                    </p:column>
+                    <p:column  headerText="Tier" >
+                        <h:outputText value="#{position.hasTier eq true ? positionBean.getTier(position).getName() : '-'}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel> 
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

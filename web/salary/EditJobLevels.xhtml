@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Job Level">
+                <p:panel header="Job Levels" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedJobLevel" value="Edit">
+                            <p:ajax event="click" listener="#{jobLevelBean.btnEditSelectedJobLevel_Handler}"  process="@this jobLevelsDataTable"  update=":msgs inputForm:inputPanel btnSaveJobLevel" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="jobLevelsDataTable" var="jobLevel" value="#{jobLevelBean.jobLevelsList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 rowKey="#{jobLevel.ID}" selection="#{jobLevelBean.selectedJobLevel}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            JobLevels
+                        </f:facet>
+                        <p:column headerText=" " style="width: 50px">
+                            <h:outputText value="#{rowIndex + 1}" style="width: 50px" />
+                        </p:column>
+                        <p:column  headerText="Level" >
+                            <h:outputText value="#{jobLevel.level}" />
+                        </p:column>
+                        <p:column  headerText="Description" >
+                            <h:outputText value="#{jobLevel.description}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Level : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{jobLevelBean.rowSubmitted}" id="levelInputText" style="width: 280px" required="true"  requiredMessage="Level cannot be empty." validatorMessage="Level must be 1 characters in length."
+                                         value="#{jobLevelBean.currentTempJobLevel.level}" > 
+
+                                <f:validateLength maximum="1" minimum="1"></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="levelInputText" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Description : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{jobLevelBean.rowSubmitted}" id="descriptionInputText" style="width: 280px" required="true" requiredMessage="Description cannot be empty." validatorMessage="Description must be 2-60 characters in length." value="#{jobLevelBean.currentTempJobLevel.description}">
+                                <f:validateLength maximum="60" minimum="2"></f:validateLength>
+                            </p:inputText><br/>
+                            <p:message id="ms2" for="descriptionInputText" display="text"></p:message>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton id ="btnNewJobLevel" value="New"  icon="fa fa-fw fa-plus" actionListener="#{jobLevelBean.btnNewJobLevel_Handler}" update=":msgs inputForm:inputPanel btnSaveJobLevel"> 
+
+                    </p:commandButton>
+                    <p:commandButton id ="btnSaveJobLevel" value="Save" disabled="#{jobLevelBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{jobLevelBean.btnSaveJobLevel_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpJobLevelsDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{jobLevelBean.btnRefreshList_Handler}" process="@this" update=":msgs tmpJobLevelsDataTable"> 
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{jobLevelBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{jobLevelBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpJobLevelsDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{jobLevelBean.rowSubmitted}" value="Delete Row" actionListener="#{jobLevelBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpJobLevelsDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable  id="tmpJobLevelsDataTable" var="tmpJobLevel" value="#{jobLevelBean.tempJobLevelsList}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{tmpJobLevel.ID}" selection="#{jobLevelBean.selectedTempJobLevel}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending JobLevels
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpJobLevelsDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel" listener="#{jobLevelBean.tmpJobLevelsDataTableDataTable_rowSelected}" />
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px" />
+                    </p:column>
+                    <p:column  headerText="Level" >
+                        <h:outputText value="#{tmpJobLevel.level}" />
+                    </p:column>
+                    <p:column headerText="Description">
+                        <h:outputText value="#{tmpJobLevel.description}"/>
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpJobLevel.tempDetail.tempStatus}" />
+                    </p:column> 
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

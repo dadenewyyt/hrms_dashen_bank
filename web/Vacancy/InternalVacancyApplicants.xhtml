@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../masterTemplate.xhtml">
+            <ui:define name="content">
+                <p:growl id="messages" showDetail="true"  /> 
+                <p:panel id="pnlForRegPageHeading" styleClass="#{internalVacancApplicantsBean.pnlForRegPageHeadingRender ? 'show' : 'hide'}">Register Internal Vacancy Applicants</p:panel>
+                <p:panel id="pnlForAppPageHeading" styleClass="#{internalVacancApplicantsBean.pnlForAppPageHeadingRender ? 'show' : 'hide'}">Approve Internal Vacancy Applicants</p:panel>
+                <h:form id="frmForMaker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForInputFieldsOnMakerSide" styleClass="#{internalVacancApplicantsBean.pnlForInputFieldsOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:panelGrid styleClass="inputGrid" columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                            <h:outputText value="Vacancy Number : "/>
+                            <p:selectOneMenu id="drpDnForVacNoOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{internalVacancApplicantsBean.intVacApp.vacancy.id}" required="true"  requiredMessage="Please Select the Vacancy.">
+                                <f:selectItem itemLabel="--Select Vacancy--" itemValue=""/>
+                                <f:selectItems value ="#{internalVacancApplicantsBean.vacSelectItem}" />
+                            </p:selectOneMenu>
+                            <h:outputText value="Employee Name : "/>
+                            <p:selectOneMenu id="drpDnForEmpNamOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{internalVacancApplicantsBean.intVacApp.employee.employeeSerialID}" required="true"  requiredMessage="Please Select an Employee.">
+                                <f:selectItem itemLabel="--Select Employee--" itemValue=""/>
+                                <f:selectItems value ="#{internalVacancApplicantsBean.empSelectItem}" />                               
+                            </p:selectOneMenu>
+                            <h:outputText value="Application Date : "/>
+                            <p:calendar id= "calForAppDteOnMakerSide" pattern="dd-MMM-yyyy"  value="#{internalVacancApplicantsBean.intVacApp.applicationDateInDate}" showOn="button" readonlyInput="true"></p:calendar>
+                            <h:outputText value="Applicant Status : "/>
+                            <p:selectOneMenu id="drpDnForAppStaOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{internalVacancApplicantsBean.intVacApp.applicationStatus}" required="true"  requiredMessage="Please Select Applicant Status.">
+                                <f:selectItem itemLabel="--Select Applicant Status--" itemValue=""/>
+                                <f:selectItem itemLabel="Waiting Result" itemValue="Waiting Result"/>
+                                <f:selectItem itemLabel="Nominated" itemValue="Nominated"/>
+                                <f:selectItem itemLabel="Not Nominated" itemValue="Not Nominated"/>
+                                <f:selectItem itemLabel="Waiting List" itemValue="Waiting List"/>
+                                <f:selectItem itemLabel="Excluded" itemValue="Excluded"/>
+                            </p:selectOneMenu>
+                            <h:outputText value="Offer Status : "/>
+                            <p:selectOneMenu id="drpDnForOffStaOnMakerSide" style="width:250px" autoWidth="false" filter="true" value="#{internalVacancApplicantsBean.intVacApp.offerStatus}" required="true"  requiredMessage="Please Select Offer Status.">
+                                <f:selectItem itemLabel="--Select Offer Status--" itemValue=""/>
+                                <f:selectItem itemLabel="Waiting for Response" itemValue="Male"/>
+                                <f:selectItem itemLabel="Accepted" itemValue="Accepted"/>
+                                <f:selectItem itemLabel="Declined" itemValue="Declined"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="pnlForUnappIntVacApptsDataTblOnMakerSide" styleClass="#{internalVacancApplicantsBean.pnlForUnappIntVacApptsDataTblOnMakerSideRender ? 'show' : 'hide'}">
+                        <p:dataTable  id="dtblForUnappIntVacApptsOnMakerSide" var="unappIntVacApptsOnMakerSide" value="#{internalVacancApplicantsBean.unappIntVacAppts}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{unappIntVacApptsOnMakerSide.id}" selection="#{internalVacancApplicantsBean.selectedRowInUnappIntVacApptsDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:calForAppDteOnMakerSide frmForMaker:drpDnForAppStaOnMakerSide frmForMaker:drpDnForOffStaOnMakerSide" listener="#{internalVacancApplicantsBean.unappIntVacApptsDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.vacancy.vacancyNumber}" />
+                                <h:outputText value="->" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedVacancyArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.unapprovedVacancy.vacancyNumber}" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedVacancyDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.employee.fullName}" />
+                                <h:outputText value="->" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedEmployeeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.unapprovedEmployee.fullName}" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedEmployeeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Application Date" >
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.applicationDate}" />
+                                <h:outputText value="->" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedApplicationDateArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.unapprovedApplicationDate}" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedApplicationDateDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Applicant Status" >
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.applicationStatus}" />
+                                <h:outputText value="->" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedApplicationStatusArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.unapprovedApplicationStatus}" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedApplicationStatusDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Offer Status" >
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.offerStatus}" />
+                                <h:outputText value="->" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedOfferStatusArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{unappIntVacApptsOnMakerSide.unapprovedOfferStatus}" styleClass="#{unappIntVacApptsOnMakerSide.unapprovedOfferStatusDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppIntVacApptsDataTblOnMakerSide" styleClass="#{internalVacancApplicantsBean.pnlForAppIntVacApptsDataTblOnMakerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:dataTable  id="dtblForAppIntVacApptsOnMakerSide" var="appIntVacApptsOnMakerSide" value="#{internalVacancApplicantsBean.appIntVacAppts}"  selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top" rowKey="#{appIntVacApptsOnMakerSide.id}" selection="#{internalVacancApplicantsBean.selectedRowInappIntVacApptsDataTblOnMakerSide}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                            <p:ajax event="rowSelect" update="frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:calForAppDteOnMakerSide frmForMaker:drpDnForAppStaOnMakerSide frmForMaker:drpDnForOffStaOnMakerSide" listener="#{internalVacancApplicantsBean.appIntVacApptsDataTblOnMakerSideRowSelectedListener}" />                             
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{appIntVacApptsOnMakerSide.vacancy.vacancyNumber}" />
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{appIntVacApptsOnMakerSide.employee.fullName}" />
+                            </p:column>
+                            <p:column  headerText="Application Date" >
+                                <h:outputText value="#{appIntVacApptsOnMakerSide.applicationDate}" />
+                            </p:column>
+                            <p:column  headerText="Applicant Status" >
+                                <h:outputText value="#{appIntVacApptsOnMakerSide.applicationStatus}" />
+                            </p:column>
+                            <p:column  headerText="Offer Status" >
+                                <h:outputText value="#{appIntVacApptsOnMakerSide.offerStatus}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForBtnsOnMakerSide" styleClass="#{internalVacancApplicantsBean.pnlForBtnsOnMakerSideRender ? 'show' : 'hide'}">          
+                        <p:commandButton   id ="btnForResetIntVacApptOnMakerSide" value="Reset"  icon="fa fa-fw fa-plus" actionListener="#{internalVacancApplicantsBean.btnForResetIntVacApptOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:calForAppDteOnMakerSide frmForMaker:drpDnForAppStaOnMakerSide frmForMaker:drpDnForOffStaOnMakerSide frmForMaker:dtblForUnappIntVacApptsOnMakerSide frmForMaker:dtblForAppIntVacApptsOnMakerSide"> </p:commandButton>
+                        <p:commandButton   id ="btnForSaveIntVacApptOnMakerSide" value="Save"  icon="fa fa-fw fa-save" actionListener="#{internalVacancApplicantsBean.btnForSaveIntVacApptOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:calForAppDteOnMakerSide frmForMaker:drpDnForAppStaOnMakerSide frmForMaker:drpDnForOffStaOnMakerSide frmForMaker:dtblForUnappIntVacApptsOnMakerSide frmForMaker:dtblForAppIntVacApptsOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForSubmitIntVacApptOnMakerSide" value="Submit"  icon="fa fa-fw fa-save" actionListener="#{internalVacancApplicantsBean.btnForSubmitIntVacApptOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:calForAppDteOnMakerSide frmForMaker:drpDnForAppStaOnMakerSide frmForMaker:drpDnForOffStaOnMakerSide frmForMaker:dtblForUnappIntVacApptsOnMakerSide frmForMaker:dtblForAppIntVacApptsOnMakerSide"></p:commandButton>
+                        <p:commandButton   id ="btnForDeleteIntVacApptOnMakerSide" value="Delete"  icon="fa fa-fw fa-remove" actionListener="#{internalVacancApplicantsBean.btnForDeleteIntVacApptOnMakerSideHandler}" update=":messages frmForMaker:drpDnForVacNoOnMakerSide frmForMaker:drpDnForEmpNamOnMakerSide frmForMaker:calForAppDteOnMakerSide frmForMaker:drpDnForAppStaOnMakerSide frmForMaker:drpDnForOffStaOnMakerSide frmForMaker:dtblForUnappIntVacApptsOnMakerSide frmForMaker:dtblForAppIntVacApptsOnMakerSide">
+                            <p:confirm icon="ui-icon-alert" header="Delete External Vacancy Applicant" message="Are you sure you want to delete the selected External Vacancy Applicant?"/>
+                        </p:commandButton>
+                    </p:panel>
+                </h:form>
+                <h:form id="frmForChecker" onkeypress="return event.keyCode !== 13;">
+                    <p:panel id="pnlForIntVacApptsToBeReviewedByCheckerDataTblAndBtns" styleClass="#{internalVacancApplicantsBean.pnlForIntVacApptsToBeReviewedByCheckerDataTblAndBtnsRender ? 'show' : 'hide'}">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Approve" actionListener="#{internalVacancApplicantsBean.btnForApproveSelectedIntVacApptRowsOnCheckerSideHandler}" update=":messages frmForChecker:dtblForIntVacApptsToBeReviewedByChecker frmForChecker:dtblForAppIntVacApptsOnCheckerSide"/>
+                            <p:menuitem value="Make Editable" actionListener="#{internalVacancApplicantsBean.btnForMakeSelectedIntVacApptRowsEditableOnCheckerSideHandler}" update=":messages frmForChecker:dtblForIntVacApptsToBeReviewedByChecker frmForChecker:dtblForAppIntVacApptsOnCheckerSide"/>
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForIntVacApptsToBeReviewedByChecker" var="intVacApptsToBeReviewedByChecker" value="#{internalVacancApplicantsBean.toBeReviewdIntVacAppts}" rowIndexVar="rowIndex"  rowKey="#{intVacApptsToBeReviewedByChecker.id}" selection="#{internalVacancApplicantsBean.selectedRowsInIntVacApptsToBeReviewedByCheckerDataTbl}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.vacancy.vacancyNumber}" />
+                                <h:outputText value="->" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedVacancyArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.unapprovedVacancy.vacancyNumber}" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedVacancyDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.employee.fullName}" />
+                                <h:outputText value="->" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedEmployeeArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.unapprovedEmployee.fullName}" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedEmployeeDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Application Date" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.applicationDate}" />
+                                <h:outputText value="->" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedApplicationDateArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.unapprovedApplicationDate}" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedApplicationDateDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Applicant Status" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.applicationStatus}" />
+                                <h:outputText value="->" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedApplicationStatusArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.unapprovedApplicationStatus}" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedApplicationStatusDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Offer Status" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.offerStatus}" />
+                                <h:outputText value="->" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedOfferStatusArrow ? 'show' : 'hide'}" />
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.unapprovedOfferStatus}" styleClass="#{intVacApptsToBeReviewedByChecker.unapprovedOfferStatusDisplay ? 'show' : 'hide'}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.createdBy}" />
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.creationTimeStamp}" />
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.editedBy}" />
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{intVacApptsToBeReviewedByChecker.editingTimeStamp}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="pnlForAppIntVacApptsDataTblOnCheckerSide" styleClass="#{internalVacancApplicantsBean.pnlForAppIntVacApptsDataTblOnCheckerSideRender ? 'show' : 'hide'}" header="Approved Requests" toggleable="true" collapsed="true">
+                        <p:menuButton value="Actions">
+                            <p:menuitem value="Delete" actionListener="#{internalVacancApplicantsBean.btnForDeleteSelectedIntVacApptRowsOnCheckerSide}" update=":messages frmForChecker:dtblForIntVacApptsToBeReviewedByChecker frmForChecker:dtblForAppIntVacApptsOnCheckerSide" />
+                        </p:menuButton>
+                        <p:dataTable  id="dtblForAppIntVacApptsOnCheckerSide" var="appIntVacApptsOnCheckerSide" value="#{internalVacancApplicantsBean.appIntVacAppts}" rowIndexVar="rowIndex"  rowKey="#{appIntVacApptsOnCheckerSide.id}" selection="#{internalVacancApplicantsBean.selectedRowsInAppIntVacApptsDataTblOnCheckerSide}" tableStyle="table-layout: auto;">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column  headerText="Vacancy Number" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.vacancy.vacancyNumber}" />
+                            </p:column>
+                            <p:column  headerText="Employee Name" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.employee.fullName}" />
+                            </p:column>
+                            <p:column  headerText="Application Date" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.applicationDate}" />
+                            </p:column>
+                            <p:column  headerText="Applicant Status" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.applicationStatus}" />
+                            </p:column>
+                            <p:column  headerText="Offer Status" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.offerStatus}" />
+                            </p:column>
+                            <p:column  headerText="Created By" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.createdBy}" />
+                            </p:column>
+                            <p:column  headerText="Creation Time" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.creationTimeStamp}" />
+                            </p:column>
+                            <p:column  headerText="Edited By" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.editedBy}" />
+                            </p:column>
+                            <p:column  headerText="Editing Time" >
+                                <h:outputText value="#{appIntVacApptsOnCheckerSide.editingTimeStamp}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

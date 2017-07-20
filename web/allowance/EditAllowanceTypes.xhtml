@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true" globalOnly="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Allowance Type">
+                <p:panel header="Allowance Types" toggleable="true" collapsed="true" >
+                    <p:outputPanel >
+                        <p:commandButton id="btnEditSelectedAllowanceType" value="Edit">
+                            <p:ajax event="click" listener="#{allowanceTypeBean.btnEditSelectedAllowanceType_Handler}"  process="@this allowanceTypesDataTable"  update=":msgs inputForm:inputPanel btnSaveAllowanceType" />
+                        </p:commandButton>
+                    </p:outputPanel>
+                    <p:dataTable id="allowanceTypesDataTable" var="allowanceType" value="#{allowanceTypeBean.allowanceTypesList}" selectionMode="single" rowIndexVar="rowIndex" paginatorPosition="top"
+                                 rowKey="#{allowanceType.ID}" selection="#{allowanceTypeBean.selectedAllowanceType}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">                        
+                        <f:facet name="header">
+                            Allowance Types
+                        </f:facet>
+                        <p:column headerText=" " style="width: 50px">
+                            <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                        </p:column>
+                        <p:column  headerText="Name" >
+                            <h:outputText value="#{allowanceType.name}" />
+                        </p:column>
+                        <p:column  headerText="Payment Method" >
+                            <h:outputText value="#{allowanceType.paymentMethod.toString()}" />
+                        </p:column>
+                        <p:column headerText="Unit Price">
+                            <h:outputText value="#{allowanceTypeBean.isAllowanceTypeQuantitative(allowanceType) ? allowanceTypeBean.getAllowanceTypeQuantitativeByTypeID(allowanceType.getID()).getUnitPrice() : '-'}">
+                                <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Measurement Unit">
+                            <h:outputText value="#{allowanceTypeBean.isAllowanceTypeQuantitative(allowanceType) ? allowanceTypeBean.getAllowanceTypeQuantitativeByTypeID(allowanceType.getID()).getMeasurementUnit() : '-'}" />
+                        </p:column>
+                        <p:column headerText="Depends on position" >
+                            <h:outputText value="#{allowanceType.dependsOnPosition}" />
+                        </p:column>
+                        <p:column headerText="Depends on location" >
+                            <h:outputText value="#{allowanceType.dependsOnLocation}" />
+                        </p:column>
+                        <p:column headerText="Depends on employment center" >
+                            <h:outputText value="#{allowanceType.dependsOnEmploymentCenter}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel  id="inputPanel">
+                    <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="4" style=" font-size: 1em; top: 30px; left: 15px;  ">
+                        <h:outputText value="Name : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{allowanceTypeBean.rowSubmitted}" id="nameInputText" style="width: 280px" required="true"  requiredMessage="Name cannot be empty." value="#{allowanceTypeBean.currentTempAllowanceType.name}" >
+                            </p:inputText><br/>
+                            <p:message id="ms1" for="nameInputText" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Payment Method : "/>
+                        <h:panelGroup>
+                            <p:selectOneMenu disabled="#{allowanceTypeBean.rowSubmitted}" id="paymentMethodSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Payment option must be selected."
+                                         value="#{allowanceTypeBean.currentTempAllowanceType.paymentMethod}" >
+                                <f:selectItem itemLabel="--Select Payment Option--" itemValue=""/>
+                                <f:selectItems value ="#{allowanceTypeBean.paymentOptionsList}" />
+                                <p:ajax event="itemSelect" listener="#{allowanceTypeBean.paymentOptionSelectOneMenu_itemSelect}" update="unitPriceInputNumber measurementUnitInputText"/>
+                            </p:selectOneMenu >
+                            <p:message  id="ms2" for="paymentMethodSelectOneMenu" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Unit Price : "/>
+                        <h:panelGroup>
+                            <p:inputNumber disabled="#{allowanceTypeBean.rowSubmitted or !allowanceTypeBean.typeIsQuantitative}" id="unitPriceInputNumber" style="width: 280px" required="true" requiredMessage="Unit price cannot be empty." value="#{allowanceTypeBean.currentAllowanceTypeQuantitative.unitPrice}">
+                            </p:inputNumber><br/>
+                            <p:message id="ms3" for="unitPriceInputNumber" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Measurement Unit : "/>
+                        <h:panelGroup>
+                            <p:inputText disabled="#{allowanceTypeBean.rowSubmitted or !allowanceTypeBean.typeIsQuantitative}" id="measurementUnitInputText" style="width: 280px" required="true" requiredMessage="Measurement unit cannot be empty." value="#{allowanceTypeBean.currentAllowanceTypeQuantitative.measurementUnit}">
+                            </p:inputText><br/>
+                            <p:message id="ms4" for="measurementUnitInputText" display="text"></p:message>
+                        </h:panelGroup>
+                        <h:outputText value="Depends On Position : "/>
+                        <h:panelGroup>
+                            <p:selectBooleanButton disabled="#{allowanceTypeBean.rowSubmitted}" id="dependsOnPositionSelectBooleanButton" onLabel="Yes" offLabel="No" value="#{allowanceTypeBean.currentTempAllowanceType.dependsOnPosition}" >
+                            </p:selectBooleanButton>
+                        </h:panelGroup>
+                        <h:outputText value="Depends On Location : "/>
+                        <h:panelGroup>
+                            <p:selectBooleanButton disabled="#{allowanceTypeBean.rowSubmitted}" id="dependsOnLocationSelectBooleanButton" onLabel="Yes" offLabel="No" value="#{allowanceTypeBean.currentTempAllowanceType.dependsOnLocation}" >
+                            </p:selectBooleanButton>
+                        </h:panelGroup>
+                        <h:outputText value="Depends On Employment Center : "/>
+                        <h:panelGroup>
+                            <p:selectBooleanButton disabled="#{allowanceTypeBean.rowSubmitted}" id="dependsOnEmploymentCenterSelectBooleanButton" onLabel="Yes" offLabel="No" value="#{allowanceTypeBean.currentTempAllowanceType.dependsOnEmploymentCenter}" >
+                            </p:selectBooleanButton>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:panel>
+                <p:panel id="inputActionPanel"> 
+                    <p:commandButton id ="btnNewAllowanceType" value="New" icon="fa fa-fw fa-plus" actionListener="#{allowanceTypeBean.btnNewAllowanceType_Handler}" update=":msgs inputForm:inputPanel btnSaveAllowanceType"> 
+
+                    </p:commandButton>
+                    <p:commandButton id ="btnSaveAllowanceType" value="Save" disabled="#{allowanceTypeBean.rowSubmitted}" icon="fa fa-fw fa-save" actionListener="#{allowanceTypeBean.btnSaveAllowanceType_Handler}" 
+                                       update=":msgs inputForm:inputPanel inputForm:actionsPanel tmpAllowanceTypesDataTable"> 
+
+                    </p:commandButton>   
+                </p:panel>
+                <p:panel id ="actionsPanel">
+                    <p:commandButton id ="btnRefreshList" value="Refresh"  icon="fa fa-fw fa-refresh" actionListener="#{allowanceTypeBean.btnRefreshList_Handler}" process="@this" update=":msgs tmpAllowanceTypesDataTable "> 
+                    </p:commandButton>
+                    <p:commandButton  disabled="#{allowanceTypeBean.rowSubmitted}" id ="btnSubmit" value="Submit"  icon="fa fa-fw" > 
+                        <p:ajax event="click" listener="#{allowanceTypeBean.btnSubmit_Handler}" update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpAllowanceTypesDataTable"/>
+                    </p:commandButton> 
+                    <p:commandButton id="btnDeleteRow"  disabled="#{allowanceTypeBean.rowSubmitted}" value="Delete Row" actionListener="#{allowanceTypeBean.btnDeleteRow_Handler}" 
+                                     update=":msgs inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel tmpAllowanceTypesDataTable" icon="fa fa-fw fa-remove" >
+
+                    </p:commandButton>
+                </p:panel>
+                <p:dataTable id="tmpAllowanceTypesDataTable" var="tmpAllowanceType" value="#{allowanceTypeBean.tempAllowanceTypesList}" selectionMode="single" rowIndexVar="rowIndex"  paginatorPosition="top"
+                              rowKey="#{tmpAllowanceType.ID}" selection="#{allowanceTypeBean.selectedTempAllowanceType}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Pending Allowance Types
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="tmpAllowanceTypesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:ajax event="rowSelect" update="inputForm:inputPanel inputForm:actionsPanel inputForm:inputActionPanel" listener="#{allowanceTypeBean.tmpAllowanceTypesDataTableDataTable_rowSelected}" />
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px" />
+                    </p:column>
+                    <p:column  headerText="Name" >
+                        <h:outputText value="#{tmpAllowanceType.name}" />
+                    </p:column>
+                    <p:column headerText="Payment Method">
+                        <h:outputText value="#{tmpAllowanceType.paymentMethod.toString()}"/>
+                    </p:column>
+                    <p:column headerText="Unit Price">
+                        <h:outputText value="#{allowanceTypeBean.isAllowanceTypeQuantitative(tmpAllowanceType) ? allowanceTypeBean.getAllowanceTypeQuantitativeByTypeID(tmpAllowanceType.getID()).getUnitPrice() : '-'}">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Measurement Unit">
+                        <h:outputText value="#{allowanceTypeBean.isAllowanceTypeQuantitative(tmpAllowanceType) ? allowanceTypeBean.getAllowanceTypeQuantitativeByTypeID(tmpAllowanceType.getID()).getMeasurementUnit() : '-'}" />
+                    </p:column>
+                    <p:column headerText="Depends on position">
+                        <h:outputText value="#{tmpAllowanceType.dependsOnPosition eq true ? 'Yes' : 'No'}" />
+                    </p:column>
+                    <p:column headerText="Depends on location">
+                        <h:outputText value="#{tmpAllowanceType.dependsOnLocation eq true ? 'Yes' : 'No'}" />
+                    </p:column>
+                    <p:column headerText="Depends on employment center">
+                        <h:outputText value="#{tmpAllowanceType.dependsOnEmploymentCenter eq true ? 'Yes' : 'No'}" />
+                    </p:column>
+                    <p:column  headerText="Temp Status" >
+                        <h:outputText value="#{tmpAllowanceType.tmpStatus}" />
+                    </p:column> 
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

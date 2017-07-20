@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Employee Details" >                
+                <p:panelGrid >
+                    <p:row style="border: none">
+                        <p:column rowspan="8">
+                            <p:graphicImage id="profilePhotoGImage" value="#{configuration.PROFILE_PHOTO_PATH}#{employeeDetailsBean.employee.photoFileName}" height="200" width="200"  >
+                            </p:graphicImage>
+                        </p:column> 
+
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column  style="text-align: right">
+                            <h:outputText value="Name :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.fullName}" />
+                        </p:column>
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Gender :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.gender}" />
+                        </p:column>
+                    </p:row >
+                    <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Date of Birth :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.dateOfBirth}" />
+                        </p:column>
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="Employee ID :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.employeeID}" />
+                        </p:column>
+                    </p:row>
+                    <p:row style="border: none">
+                        <p:column style="text-align: right" >
+                            <h:outputText value="Date of Employemnet :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.dateOfEmployement}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row style="border: none">
+                        <p:column style="text-align: right">
+                            <h:outputText value="File Index Number :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.fileIndexNumber}" />
+                        </p:column>
+                    </p:row>  
+                    <p:row style="border: none">
+                        <p:column style="text-align: right" >
+                            <h:outputText value="Emergency Contact :"/>
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{employeeDetailsBean.employee.emergecyContact}" />
+                        </p:column>
+                    </p:row>    
+
+                </p:panelGrid>
+                <p:accordionPanel multiple="true" >
+
+                    <p:tab title="Qualification">
+                        <p:menubar>
+                            <p:submenu label="Qulifications">
+                                <p:menuitem value="Edit Qualifications" actionListener="#{employeeDetailsBean.editQualifications_Handler()}" />
+                            </p:submenu>
+                        </p:menubar>
+                        <p:panel style="border: none">
+                            <p:dataTable value="#{employeeDetailsBean.employee.qualifications}" var="qu" emptyMessage="No qualifications added." >
+                                <p:column style="width:40px">
+                                    <p:rowToggler />
+                                </p:column>
+                                <p:column headerText="Qualification">
+                                    <h:outputText value="#{qu.qualification}"/>
+                                </p:column>
+                                <p:column headerText="Qualification Level">
+                                    <h:outputText value="#{qu.qualificationLevel}"/>
+                                </p:column>
+                                <p:column headerText="CGPA">
+                                    <h:outputText value="#{qu.CGPA}"/>
+                                </p:column> 
+                                <p:column headerText="Institution">
+                                    <h:outputText value="#{qu.institution.name}"/>
+                                </p:column>
+                                <p:column headerText="Start Date">
+                                    <h:outputText value="#{qu.startDate}"/>
+                                </p:column>
+                                <p:column headerText="Date of Graduation">
+                                    <h:outputText value="#{qu.dateOfGraduation}"/>
+                                </p:column>               
+                                <p:rowExpansion>                                                                         
+                                    <p:graphicImage    value="#{configuration.QUALIFICATION_DOCUMENTS_PATH}#{qu.fileName}"/>          
+                                </p:rowExpansion>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:tab>
+                    <p:tab title="Work Experience">
+                        <p:menubar>
+                            <p:submenu label="Experiences">
+                                <p:menuitem value="Edit Experiences" actionListener="#{employeeDetailsBean.editExperiences_Handler()}" />
+                            </p:submenu>
+                        </p:menubar>
+                        <p:panel style="border: none">
+                            <p:dataTable value="#{employeeDetailsBean.employee.experiences}" var="ex" emptyMessage="No experience added." >
+                                <p:column style="width:40px">
+                                    <p:rowToggler />
+                                </p:column>
+                                <p:column headerText="Name Of Employer">
+                                    <h:outputText value="#{ex.nameOfEmployer}"/>
+                                </p:column>   
+                                <p:column  headerText="Employer Address" >
+                                    <h:outputText value="#{ex.employerAddress}" />
+                                </p:column> 
+                                <p:column  headerText="Position" >
+                                    <h:outputText value="#{ex.position}" />
+                                </p:column> 
+                                <p:column  headerText="Start Date" >
+                                    <h:outputText value="#{ex.startDate}" />
+                                </p:column> 
+                                <p:column  headerText="End Date" >
+                                    <h:outputText value="#{ex.endDate}" />
+                                </p:column> 
+                                <p:column  headerText="Total Years" >
+                                    <h:outputText value="#{ex.totalYearsOfExperience}" />
+                                </p:column> 
+                                <p:column  headerText="Reason for Resignation" >
+                                    <h:outputText value="#{ex.reasonForResignation}" />
+                                </p:column> 
+                                <p:rowExpansion>                                                                         
+                                    <p:graphicImage    value="#{configuration.EXPERIENCE_DOCUMENTS_PATH}#{ex.fileName}"/>         
+                                </p:rowExpansion>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:tab>
+                    <p:tab title="Training">
+                        <p:panel style="border: none">
+                            <p:dataTable>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </p:tab>
+                    <p:tab title="Referee">
+                        <p:menubar>
+                            <p:submenu label="Referees">
+                                <p:menuitem value="Edit Referees" actionListener="#{employeeDetailsBean.editReferees_Handler()}" />
+                            </p:submenu>
+                        </p:menubar>
+                        <p:panel style="border: none">
+                            <p:dataTable value="#{employeeDetailsBean.employee.referees}" var="rf" emptyMessage="No referees added." >
+                                <p:column style="width:40px">
+                                    <p:rowToggler />
+                                </p:column>
+                                <p:column  headerText="First Name" >
+                                    <h:outputText value="#{rf.firstName}" />
+                                </p:column>                   
+                                <p:column  headerText="Middle Name" >
+                                    <h:outputText value="#{rf.middleName}" />
+                                </p:column> 
+                                <p:column  headerText="Last Name" >
+                                    <h:outputText value="#{rf.lastName}" />
+                                </p:column> 
+                                <p:column  headerText="Salary" >
+                                    <h:outputText value="#{rf.salary}" />
+                                </p:column> 
+                                <p:column  headerText="Kebele ID" >
+                                    <h:outputText value="#{rf.kebeleId}" />
+                                </p:column> 
+                                <p:column  headerText="Residential Address" >
+                                    <h:outputText value="#{rf.residentialAddress}" />
+                                </p:column> 
+                                <p:column  headerText="Name of Employer" >
+                                    <h:outputText value="#{rf.employer}" />
+                                </p:column> 
+                                <p:column  headerText="Employer Address" >
+                                    <h:outputText value="#{rf.employerAddress}" />
+                                </p:column>                               
+                                <p:rowExpansion >
+                                    <p:panel>                            
+                                        <p:graphicImage   value="#{configuration.REFEREE_DOCUMENTS_PATH}#{rf.fileName}" height="200" width="200"  />     
+                                    </p:panel>
+                                </p:rowExpansion>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:tab>
+                    <p:tab title="Reference">
+                        <p:panel style="border: none">
+                            <p:dataTable>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </p:tab>
+                </p:accordionPanel>
+            </p:panel>                  
+        </h:form>
+    </ui:define>
+</ui:composition>

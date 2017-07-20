@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true"  /> 
+        <p:panel>
+            <h3>Salary Raise</h3>
+        </p:panel>
+        <h:form id="inputForm" onkeypress="return event.keyCode != 13;">
+            <p:panel>
+                <p>Salary raise for all employees.</p>
+                <p:panelGrid styleClass="inputGrid"  columnClasses="labelColumn,,labelColumn," columns="2">
+                    <h:outputText value="How Many Level Raise : "/>
+                    <h:panelGroup>
+                            <p:selectOneMenu id="salaryRaiseSelectOneMenu" style="width:250px" autoWidth="false" required="true" requiredMessage="Raise level is required."
+                                             value="#{salaryRaiseBean.raiseAmount}" >
+                                <f:selectItem itemLabel="--Select Level Raise--" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value ="#{salaryRaiseBean.levelRaiseList}" />
+                            </p:selectOneMenu >
+                            <p:message  id="ms1" for="salaryRaiseSelectOneMenu" style="color:red; width: 280px" display="text"></p:message>
+                    </h:panelGroup>
+                </p:panelGrid>
+                <p:commandButton id="btnSaveNewDepartment" value="Save" icon="fa fa-fw fa-save" actionListener="#{salaryRaiseBean.btnSaveSalaryRaise_Handler}" update=":msgs">
+                </p:commandButton>
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

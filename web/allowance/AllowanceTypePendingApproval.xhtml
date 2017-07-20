@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Allowance Types Pending Approval">
+                <p:menuButton value="Allowance Type">
+                    <p:menuitem value="Approve" actionListener="#{allowanceTypesPendingApprovalBean.approveSelectedRows}" update="pendingAllowanceTypesDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{allowanceTypesPendingApprovalBean.makeEditableByMaker()}" update="pendingAllowanceTypesDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingAllowanceTypesDataTable" var="tmpAllowanceType" value="#{allowanceTypesPendingApprovalBean.pendingTmpAllowanceTypes}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              rowKey="#{tmpAllowanceType.ID}" selection="#{allowanceTypesPendingApprovalBean.selectedAllowanceTypeTmps}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Allowance Types
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingAllowanceTypesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    <p:column headerText="Name" >
+                        <h:outputText value="#{tmpAllowanceType.name}" />
+                    </p:column>
+                    <p:column headerText="Payment Method">
+                        <h:outputText value="#{tmpAllowanceType.paymentMethod.toString()}" />
+                    </p:column>
+                    <p:column headerText="Unit Price">
+                        <h:outputText value="#{allowanceTypeBean.isAllowanceTypeQuantitative(tmpAllowanceType) ? allowanceTypeBean.getAllowanceTypeQuantitativeByTypeID(tmpAllowanceType.getID()).getUnitPrice() : '-'}">
+                            <f:convertNumber pattern="¤#,##0.00" currencySymbol="" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Measurement Unit">
+                        <h:outputText value="#{allowanceTypeBean.isAllowanceTypeQuantitative(tmpAllowanceType) ? allowanceTypeBean.getAllowanceTypeQuantitativeByTypeID(tmpAllowanceType.getID()).getMeasurementUnit() : '-'}" />
+                    </p:column>
+                    <p:column  headerText="Depends on position" >
+                        <h:outputText value="#{tmpAllowanceType.dependsOnPosition eq true ? 'Yes' : 'No'}" />
+                    </p:column>
+                    <p:column  headerText="Depends on location" >
+                        <h:outputText value="#{tmpAllowanceType.dependsOnLocation eq true ? 'Yes' : 'No'}" />
+                    </p:column>
+                    <p:column  headerText="Depends on employment center" >
+                        <h:outputText value="#{tmpAllowanceType.dependsOnEmploymentCenter ? 'Yes' : 'No'}" />
+                    </p:column>
+                    <p:column   headerText="Temp Status" >
+                        <h:outputText value="#{tmpAllowanceType.tmpStatus}" />
+                    </p:column>
+                    <p:column   headerText="Maker" >
+                        <h:outputText value="#{tmpAllowanceType.createdBy}" />
+
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

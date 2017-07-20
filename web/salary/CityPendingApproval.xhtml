@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" autoUpdate="true"/>            
+        <h:form id="inputForm" onkeypress="return event.keyCode !== 13;">
+            <p:panel header="Cities Pending Approval">
+                <p:menuButton value="City">
+                    <p:menuitem value="Approve" actionListener="#{citiesPendingApprovalBean.approveSelectedRows}" update="pendingCitiesDataTable" />
+                    <p:menuitem value="Make Editable" actionListener="#{citiesPendingApprovalBean.makeEditableByMaker()}" update="pendingCitiesDataTable" />
+                </p:menuButton>
+                <p:dataTable  id="pendingCitiesDataTable" var="tmpCities" value="#{citiesPendingApprovalBean.pendingTmpCities}" paginatorPosition="top" rowIndexVar="rowIndex"  
+                              rowKey="#{tmpCities.ID}" selection="#{citiesPendingApprovalBean.selectedCityTmps}" scrollable="true"  scrollWidth="97%" scrollHeight="450" rows="10"   paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Pending Cities
+                        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                        <p:columnToggler  datasource="pendingCitiesDataTable" trigger="toggler" />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText=" " style="width: 50px">
+                        <h:outputText value="#{rowIndex + 1}" style="width: 50px"/>
+                    </p:column>
+                    <p:column headerText="Name" >
+                        <h:outputText value="#{tmpCities.name}" />
+                    </p:column>
+                    <p:column headerText="Temp Status" >
+                        <h:outputText value="#{tmpCities.tmpStatus}" />
+                    </p:column>
+                    <p:column headerText="Maker" >
+                        <h:outputText value="#{tmpCities.createdBy}" />
+
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
